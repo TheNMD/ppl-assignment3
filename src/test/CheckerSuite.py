@@ -4,6 +4,6 @@ from AST import *
 
 class CheckerSuite(unittest.TestCase):
     def test1(self):
-        input = "Program([],BinOp("+",IntLit(3),BoolLit(True)))"
-        expect = "Type Mismatch In Expression: BinOp("+",IntLit(3),BoolLit(True))"
-        self.assertTrue(TestChecker.test(input, expect, 301))
+        input = """x : integer ;"""
+        expect = "None"
+        self.assertTrue(TestChecker.test(input, expect, 401))

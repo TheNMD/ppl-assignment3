@@ -15,6 +15,7 @@ from MT22Parser import MT22Parser
 from ASTGeneration import ASTGeneration
 from StaticChecker import StaticChecker
 from lexererr import *
+from StaticError import *
 import subprocess
 
 JASMIN_JAR = "./external/jasmin.jar"

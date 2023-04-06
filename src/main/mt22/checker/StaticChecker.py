@@ -1,15 +1,22 @@
 from Visitor import Visitor
-
+from StaticError import *
 
 class StaticChecker(Visitor):
     
-    def visitProgram(self,ctx:Visitor.visitProgram,o:object):
+    def __init__(self, ast):
+        self.ast = ast
+    
+    def check(self):
+        return self.visitProgram(self.ast, [])
+    
+    def visitProgram(self, ast, param):
         obj = []
-        for decl in ctx.decl:
-            obj += [self.visit(decl, obj)]
+        # print(ast.decls)
+        # raise Redeclared(kind=Variable(),identifier=name)
+        return ""
             
-    def visitVarDecl(self,ctx:Visitor.visitVarDecl,o:object):
-        name = ctx.name
-        if name in o:
-            raise Redeclared(name)
-        return name
+    # def visitVarDecl(self, ast, param):
+    #     name = ast.name
+    #     if name in param:
+    #         raise Redeclared(kind=Variable(),identifier=name)
+    #     return name

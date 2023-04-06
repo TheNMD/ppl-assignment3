@@ -1,1 +1,1 @@
-Program([],BinOp(,IntLit(3),BoolLit(True)))
+Program([VarDecl("x", IntegerType())])
