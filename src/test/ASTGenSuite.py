@@ -45,7 +45,7 @@ class ASTGenSuite(unittest.TestCase):
             printInteger(4);
         }"""
         expect = """Program([
-	FuncDecl(main, VoidType, [], None, BlockStmt([]))
+	FuncDecl(main, VoidType, [], None, BlockStmt([CallStmt(printInteger, IntegerLit(4))]))
 ])"""
         self.assertTrue(TestAST.test(input, expect, 304))
 

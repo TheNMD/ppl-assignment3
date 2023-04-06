@@ -1,1 +1,1 @@
-x, y, z: integer = 1, 2, 3;
+Program([],BinOp(,IntLit(3),BoolLit(True)))
