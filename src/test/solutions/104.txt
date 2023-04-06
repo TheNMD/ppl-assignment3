@@ -1,1 +1,1 @@
-He asked me: \"Where is John?\",<EOF>
+",H,e,a,s,k,e,d,m,e,:,\,",W,h,e,r,e,i,s,J,o,h,n,?,\,",",<EOF>
