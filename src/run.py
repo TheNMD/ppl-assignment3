@@ -6,7 +6,7 @@ from antlr4 import *
 
 for path in ['./test/', './main/mt22/parser/', './main/mt22/utils/', './main/mt22/astgen/', './main/mt22/checker/', './main/mt22/codegen/']:
     sys.path.append(path)
-ANTLR_JAR = os.environ.get('ANTLR_JAR')
+ANTLR_JAR = "../antlr-4.9.2-complete.jar"
 TARGET_DIR = '../target'
 GENERATE_DIR = 'main/mt22/parser'
 
@@ -72,7 +72,7 @@ def printUsage():
     print("python3 run.py test LexerSuite")
     print("python3 run.py test ParserSuite")
     print("python3 run.py test ASTGenSuite")
-    # print("python3 run.py test CheckerSuite")
+    print("python3 run.py test CheckerSuite")
     # print("python3 run.py test CodeGenSuite")
 
 

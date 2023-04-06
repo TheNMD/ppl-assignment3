@@ -1,0 +1,487 @@
+Q1
+Given the grammar of MP as follows:
+
+program: vardecls EOF;
+
+vardecls: vardecl vardecltail;
+
+vardecltail: vardecl vardecltail | ;
+
+vardecl: mptype ids ';' ;
+
+mptype: INTTYPE | FLOATTYPE;
+
+ids: ID ',' ids | ID; 
+
+INTTYPE: 'int';
+
+FLOATTYPE: 'float';
+
+ID: [a-z]+ ;
+
+Please copy the following class into your answer and modify the bodies of its methods to count the terminal nodes in the parse tree? Your code starts at line 10.
+
+class TerminalCount(MPVisitor):
+    def visitProgram(self,ctx:MPParser.ProgramContext):
+        eof = 1
+        return self.visit(ctx.vardecls()) + eof
+    def visitVardecls(self,ctx:MPParser.VardeclsContext):
+        return self.visit(ctx.vardecl()) + self.visit(ctx.vardecltail())
+    def visitVardecltail(self,ctx:MPParser.VardecltailContext): 
+        if ctx.getChildCount() == 2:
+            return self.visit(ctx.vardecl()) + self.visit(ctx.vardecltail())
+        return 0
+    def visitVardecl(self,ctx:MPParser.VardeclContext): 
+        ids = self.visit(ctx.ids())
+        mptype = self.visit(ctx.mptype())
+        semicolon = 1
+        return ids + mptype + semicolon
+    def visitMptype(self,ctx:MPParser.MptypeContext):
+        type = 1
+        return type
+    def visitIds(self,ctx:MPParser.IdsContext):
+        id = 1
+        if ctx.getChildCount() == 3:
+            comma = 1
+            return id + comma + self.visit(ctx.ids())
+        return id
+
+Q2
+Given the grammar of MP as follows:
+
+program: vardecls EOF;
+
+vardecls: vardecl vardecltail;
+
+vardecltail: vardecl vardecltail | ;
+
+vardecl: mptype ids ';' ;
+
+mptype: INTTYPE | FLOATTYPE;
+
+ids: ID ',' ids | ID; 
+
+INTTYPE: 'int';
+
+FLOATTYPE: 'float';
+
+ID: [a-z]+ ;
+
+Please copy the following class into your answer and modify the bodies of its methods to return the height of the parse tree? Your code starts at line 10.
+
+class TerminalCount(MPVisitor):
+    def visitProgram(self,ctx:MPParser.ProgramContext):
+        eof = 1
+        return max(self.visit(ctx.vardecls()) + 1, eof)
+    def visitVardecls(self,ctx:MPParser.VardeclsContext):
+        return max(self.visit(ctx.vardecl()) + 1, self.visit(ctx.vardecltail()) + 1)
+    def visitVardecltail(self,ctx:MPParser.VardecltailContext): 
+        if ctx.getChildCount() == 2:
+            return max(self.visit(ctx.vardecl()) + 1, self.visit(ctx.vardecltail()) + 1)
+        return 0
+    def visitVardecl(self,ctx:MPParser.VardeclContext): 
+        ids = self.visit(ctx.ids())
+        mptype = self.visit(ctx.mptype())
+        semicolon = 1
+        return max(ids + 1, mptype + 1, semicolon)
+    def visitMptype(self,ctx:MPParser.MptypeContext):
+        type = 1
+        return type
+    def visitIds(self,ctx:MPParser.IdsContext):
+        id = 1
+        if ctx.getChildCount() == 3:
+            comma = 1
+            return max(id, comma, self.visit(ctx.ids()) + 1)
+        return id
+
+Q3
+Given the grammar of MP as follows:
+
+program: mptype EOF;
+
+arraytype:  primtype dimens  ;
+
+mptype: primtype | arraytype;
+
+primtype: INTTYPE | FLOATTYPE; 
+
+dimens: dimen+;
+
+dimen: '[' num '..' num ']';
+
+num: '-'? INTLIT;
+
+INTLIT: [0-9]+ ;
+
+INTTYPE: 'integer';
+
+FLOATTYPE: 'real';
+
+and AST classes as follows:
+
+class Type():abstract
+
+class CompoundType(Type):abstract
+
+class UnionType(CompoundType):#firstType:Type,secondType:primType
+
+class ArrayType(CompoundType):#indexType:Type,eleType:primType
+
+class PrimType(Type):abstract
+
+class IntType(PrimType): pass
+
+class FloatType(PrimType): pass
+
+class RangeType(PrimType): #lowbound:int; highbound:int
+
+class Id: #name:str
+
+Please copy the following class into your answer and modify the bodies of its methods to generate the AST of a MP input?
+
+class ASTGeneration(MPVisitor):
+    def visitProgram(self,ctx:MPParser.ProgramContext):
+        return ctx.mptype().accept(self)
+    def visitMptype(self,ctx:MPParser.MptypeContext):
+        if ctx.primtype():
+            return ctx.primtype().accept(self)
+        return ctx.arraytype().accept(self)
+    def visitArraytype(self,ctx:MPParser.ArraytypeContext):
+        primtype = ctx.primtype().accept(self)
+        dim = ctx.dimens().accept(self)
+        return ArrayType(dim, primtype)
+    def visitPrimtype(self,ctx:MPParser.PrimtypeContext): 
+        if ctx.INTTYPE():
+            return IntType()
+        return FloatType()
+    def visitDimens(self,ctx:MPParser.DimensContext):
+        size = len(ctx.dimen())
+        res = ctx.dimen(0).accept(self)
+        for i in range(1, size):
+            temp = UnionType(res, ctx.dimen(i).accept(self))
+            res = temp
+        return res
+    def visitDimen(self,ctx:MPParser.DimenContext):
+        num1 = ctx.num(0).accept(self)
+        num2 = ctx.num(1).accept(self)
+        return RangeType(num1, num2)
+    def visitNum(self,ctx:MPParser.DimenContext):
+        if ctx.getChildCount() == 2:
+            return "-" + ctx.INTLIT().getText()
+        return ctx.INTLIT().getText()
+
+Q4
+Given the grammar of MP as follows:
+
+program: vardecls EOF;
+
+vardecls: vardecl vardecltail;
+
+vardecltail: vardecl vardecltail | ;
+
+vardecl: mptype ids ';' ;
+
+mptype: INTTYPE | FLOATTYPE;
+
+ids: ID ',' ids | ID; 
+
+INTTYPE: 'int';
+
+FLOATTYPE: 'float';
+
+ID: [a-z]+ ;
+
+and AST classes as follows:
+
+class Program:#decl:list(VarDecl)
+
+class Type(ABC): pass
+
+class IntType(Type): pass
+
+class FloatType(Type): pass
+
+class VarDecl: #variable:Id; varType: Type
+
+class Id: #name:str
+
+Please copy the following class into your answer and modify the bodies of its methods to generate the AST of a MP input?
+
+class ASTGeneration(MPVisitor):
+    def visitProgram(self,ctx:MPParser.ProgramContext):
+        return Program(self.visit(ctx.vardecls()))
+    def visitVardecls(self,ctx:MPParser.VardeclsContext):
+        return self.visit(ctx.vardecl()) + self.visit(ctx.vardecltail())
+    def visitVardecltail(self,ctx:MPParser.VardecltailContext): 
+        if ctx.getChildCount() == 2:
+            return self.visit(ctx.vardecl()) + self.visit(ctx.vardecltail())
+        return []
+    def visitVardecl(self,ctx:MPParser.VardeclContext): 
+        ids = self.visit(ctx.ids())
+        type = self.visit(ctx.mptype())
+        return [VarDecl(id, type) for id in ids]
+    def visitMptype(self,ctx:MPParser.MptypeContext):
+        if ctx.INTTYPE():
+            return IntType()
+        return FloatType()
+    def visitIds(self,ctx:MPParser.IdsContext):
+        if ctx.getChildCount() == 3:
+            return [Id(ctx.ID().getText())] + self.visit(ctx.ids())
+        return [Id(ctx.ID().getText())] 
+
+Q5
+Given the grammar of MP as follows:
+
+program: exp EOF;
+
+exp: term ASSIGN exp | term;
+
+term: factor COMPARE factor | factor;
+
+factor: factor ANDOR operand | operand; 
+
+operand: ID | INTLIT | BOOLIT | '(' exp ')';
+
+INTLIT: [0-9]+ ;
+
+BOOLIT: 'True' | 'False' ;
+
+ANDOR: 'and' | 'or' ;
+
+ASSIGN: '+=' | '-=' | '&=' | '|=' | ':=' ;
+
+COMPARE: '=' | '<>' | '>=' | '<=' | '<' | '>' ;
+
+ID: [a-z]+ ;
+
+and AST classes as follows:
+
+class Expr(ABC):
+
+class Binary(Expr):  #op:string;left:Expr;right:Expr
+
+class Id(Expr): #value:string
+
+class IntLiteral(Expr): #value:int
+
+class BooleanLiteral(Expr): #value:boolean
+
+Please copy the following class into your answer and modify the bodies of its methods to generate the AST of a MP input?
+
+class ASTGeneration(MPVisitor):
+    def visitProgram(self,ctx:MPParser.ProgramContext):
+        return ctx.exp().accept(self)
+    def visitExp(self,ctx:MPParser.ExpContext):
+        if ctx.ASSIGN():
+            return Binary(ctx.ASSIGN().getText(), ctx.term().accept(self), ctx.exp().accept(self))
+        return ctx.term().accept(self)
+    def visitTerm(self,ctx:MPParser.TermContext): 
+        if ctx.COMPARE():
+            return Binary(ctx.COMPARE().getText(), ctx.factor(0).accept(self), ctx.factor(1).accept(self))
+        return ctx.factor(0).accept(self)
+    def visitFactor(self,ctx:MPParser.FactorContext):
+        if ctx.ANDOR():
+            return Binary(ctx.ANDOR().getText(), ctx.factor().accept(self), ctx.operand().accept(self))
+        return ctx.operand().accept(self)
+    def visitOperand(self,ctx:MPParser.OperandContext):
+        if ctx.ID():
+            return Id(ctx.ID().getText())
+        elif ctx.INTLIT():
+            return IntLiteral(ctx.INTLIT().getText())
+        elif ctx.BOOLIT():
+            return BooleanLiteral(ctx.BOOLIT().getText())
+        else: return self.visit(ctx.exp())
+
+Q6
+Given the grammar of MP as follows:
+
+program: vardecl+ EOF;
+
+vardecl: mptype ids ';' ;
+
+mptype: INTTYPE | FLOATTYPE;
+
+ids: ID (',' ID)*; 
+
+INTTYPE: 'int';
+
+FLOATTYPE: 'float';
+
+ID: [a-z]+ ;
+
+and AST classes as follows:
+
+class Program:#decl:list(VarDecl)
+
+class Type(ABC): pass
+
+class IntType(Type): pass
+
+class FloatType(Type): pass
+
+class VarDecl: #variable:Id; varType: Type
+
+class Id: #name:str
+
+Please copy the following class into your answer and modify the bodies of its methods to generate the AST of a MP input?
+
+class ASTGeneration(MPVisitor):
+    def visitProgram(self,ctx:MPParser.ProgramContext):
+        size = len(ctx.vardecl())
+        res = ctx.vardecl()[0].accept(self)
+        for i in range(1, size):
+            res += ctx.vardecl()[i].accept(self)
+        return Program(res)
+    def visitVardecl(self,ctx:MPParser.VardeclContext): 
+        ids = self.visit(ctx.ids())
+        type = self.visit(ctx.mptype())
+        return [VarDecl(id, type) for id in ids]
+    def visitMptype(self,ctx:MPParser.MptypeContext):
+        if ctx.INTTYPE():
+            return IntType()
+        return FloatType()
+    def visitIds(self,ctx:MPParser.IdsContext):
+        size = len(ctx.ID())
+        res = [Id(ctx.ID()[0].getText())]
+        for i in range(1, size):
+            res += [Id(ctx.ID(i).getText())]
+        return res
+
+Q7
+Given the grammar of MP as follows:
+
+program: exp EOF;
+
+exp: (term ASSIGN)* term;
+
+term: factor COMPARE factor | factor;
+
+factor: operand (ANDOR operand)*; 
+
+operand: ID | INTLIT | BOOLIT | '(' exp ')';
+
+INTLIT: [0-9]+ ;
+
+BOOLIT: 'True' | 'False' ;
+
+ANDOR: 'and' | 'or' ;
+
+ASSIGN: '+=' | '-=' | '&=' | '|=' | ':=' ;
+
+COMPARE: '=' | '<>' | '>=' | '<=' | '<' | '>' ;
+
+ID: [a-z]+ ;
+
+and AST classes as follows:
+
+class Expr(ABC):
+
+class Binary(Expr):  #op:string;left:Expr;right:Expr
+
+class Id(Expr): #value:string
+
+class IntLiteral(Expr): #value:int
+
+class BooleanLiteral(Expr): #value:boolean
+
+Please copy the following class into your answer and modify the bodies of its methods to generate the AST of a MP input?
+
+class ASTGeneration(MPVisitor):
+    def visitProgram(self,ctx:MPParser.ProgramContext):
+        return ctx.exp().accept(self)
+    def visitExp(self,ctx:MPParser.ExpContext):
+        size = len(ctx.ASSIGN())
+        res = ctx.term()[-1].accept(self)
+        for i in range(size - 1, -1, -1):
+            res = Binary(ctx.ASSIGN(i).getText(), ctx.term(i).accept(self), res)
+        return res
+    def visitTerm(self,ctx:MPParser.TermContext): 
+        if ctx.COMPARE():
+            return Binary(ctx.COMPARE().getText(), ctx.factor(0).accept(self), ctx.factor(1).accept(self))
+        return ctx.factor(0).accept(self)
+    def visitFactor(self,ctx:MPParser.FactorContext):
+        size = len(ctx.ANDOR())
+        res = ctx.operand(0).accept(self)
+        for i in range(1, size + 1):
+            res = Binary(ctx.ANDOR(i -1).getText(), res, ctx.operand(i).accept(self))
+        return res
+    def visitOperand(self,ctx:MPParser.OperandContext):
+        if ctx.ID():
+            return Id(ctx.ID().getText())
+        elif ctx.INTLIT():
+            return IntLiteral(ctx.INTLIT().getText())
+        elif ctx.BOOLIT():
+            return BooleanLiteral(ctx.BOOLIT().getText())
+        else: return self.visit(ctx.exp())
+
+Q8
+Given the grammar of MP as follows:
+
+program: mptype EOF;
+
+arraytype:  primtype dimen | arraytype dimen  ;
+
+mptype: primtype | arraytype;
+
+primtype: INTTYPE | FLOATTYPE; 
+
+dimen: '[' num '..' num ']';
+
+num: '-'? INTLIT;
+
+INTLIT: [0-9]+ ;
+
+INTTYPE: 'integer';
+
+FLOATTYPE: 'real';
+
+and AST classes as follows:
+
+class Type():abstract
+
+class CompoundType(Type):abstract
+
+class UnionType(CompoundType):#firstType:Type,secondType:primType
+
+class ArrayType(CompoundType):#indexType:Type,eleType:primType
+
+class PrimType(Type):abstract
+
+class IntType(PrimType): pass
+
+class FloatType(PrimType): pass
+
+class RangeType(PrimType): #lowbound:int; highbound:int
+
+Please copy the following class into your answer and modify the bodies of its methods to generate the AST of a MP input?
+
+class ASTGeneration(MPVisitor):
+    def visitProgram(self,ctx:MPParser.ProgramContext):
+        return ctx.mptype().accept(self)
+    def visitMptype(self,ctx:MPParser.MptypeContext):
+        if ctx.primtype():
+            return ctx.primtype().accept(self)
+        size = len(ctx.arraytype().accept(self))
+        type_res = ctx.arraytype().accept(self)[0]
+        dim_res = ctx.arraytype().accept(self)[1]
+        for i in range(2, size):
+            temp = UnionType(dim_res, ctx.arraytype().accept(self)[i])
+            dim_res = temp
+        return ArrayType(dim_res, type_res)
+    def visitArraytype(self,ctx:MPParser.ArraytypeContext):
+        if ctx.primtype():
+            return [ctx.primtype().accept(self)] + [ctx.dimen().accept(self)]
+        elif ctx.arraytype():
+            return ctx.arraytype().accept(self) + [ctx.dimen().accept(self)]
+    def visitPrimtype(self,ctx:MPParser.PrimtypeContext): 
+        if ctx.INTTYPE():
+            return IntType()
+        return FloatType()
+    def visitDimen(self,ctx:MPParser.DimenContext):
+        num1 = ctx.num(0).accept(self)
+        num2 = ctx.num(1).accept(self)
+        return RangeType(num1, num2)
+    def visitNum(self,ctx:MPParser.DimenContext):
+        if ctx.getChildCount() == 2:
+            return "-" + ctx.INTLIT().getText()
+        return ctx.INTLIT().getText()
