@@ -17,3 +17,8 @@ class CheckerSuite(unittest.TestCase):
         input = """x : auto ;"""
         expect = "Invalid Variable: x"
         self.assertTrue(TestChecker.test(input, expect, 403))
+
+    def test4(self):
+        input = """x, y, z : string = "abd", "eex", 5 ;"""
+        expect = "Type mismatch in expression: IntegerLit(5)"
+        self.assertTrue(TestChecker.test(input, expect, 404))

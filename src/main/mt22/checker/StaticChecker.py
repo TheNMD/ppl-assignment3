@@ -19,20 +19,19 @@ class StaticChecker(Visitor):
         name, typ, init = ast.name, ast.typ, ast.init
         if name in param:
             raise Redeclared(kind=Variable(), identifier=name)
-        # TODO Undeclared
         if init:
             # TODO init la BiExpr, UnExpr, ArrayCell, FuncCall, ID
             if type(typ) is IntegerType:
-                if type(init) is not IntegerLit:
+                if type(init) is FloatLit or type(init) is BooleanLit or type(init) is StringLit:
                     raise TypeMismatchInExpression(init)
             elif type(typ) is FloatType:
-                if type(init) is not IntegerLit and type(init) is not FloatLit:
+                if type(init) is BooleanLit or type(init) is StringLit:
                     raise TypeMismatchInExpression(init)
             elif type(typ) is BooleanType:
-                if type(init) is not BooleanLit:
+                if type(init) is IntegerLit or type(init) is FloatLit or type(init) is StringLit:
                     raise TypeMismatchInExpression(init)
             elif type(typ) is StringType:
-                if type(init) is not StringLit:
+                if type(init) is IntegerLit or type(init) is FloatLit or type(init) is BooleanLit:
                     raise TypeMismatchInExpression(init)
             elif type(typ) is ArrayType:
                 pass

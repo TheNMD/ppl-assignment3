@@ -1,3 +1,275 @@
+Lecture 6
+
+Q1
+Let AST of a programming language be defined as follows:
+
+class Program: #decl:List[Decl]
+
+class Decl(ABC): #abstract class
+
+class VarDecl(Decl): #name:str,typ:Type
+
+class ConstDecl(Decl): #name:str,val:Lit
+
+class Type(ABC): #abstract class
+
+class IntType(Type)
+
+class FloatType(Type)
+
+class Lit(ABC): #abstract class
+
+class IntLit(Lit): #val:int
+
+and exception RedeclaredDeclaration:
+
+class RedeclaredDeclaration(Exception): #name:str
+
+Implement the methods of the following class Visitor to travel on the above ASST to detect redeclared declarations (throw exception RedeclaredDeclaration):
+
+class StaticCheck(Visitor):
+
+    def visitProgram(self,ctx:Program,o:object):
+        obj = []
+        for decl in ctx.decl:
+            obj += [self.visit(decl, obj)]
+
+    def visitVarDecl(self,ctx:VarDecl,o:object):
+        name = ctx.name
+        if name in o:
+            raise RedeclaredDeclaration(name)
+        return name
+
+    def visitConstDecl(self,ctx:ConstDecl,o:object):
+        name = ctx.name
+        if name in o:
+            raise RedeclaredDeclaration(name)
+        return name
+
+    def visitIntType(self,ctx:IntType,o:object):pass
+
+    def visitFloatType(self,ctx:FloatType,o:object):pass
+
+    def visitIntLit(self,ctx:IntLit,o:object):pass
+
+Q2
+Let AST of a programming language be defined as follows:
+
+class Program: #decl:List[Decl]
+
+class Decl(ABC): #abstract class
+
+class VarDecl(Decl): #name:str,typ:Type
+
+class ConstDecl(Decl): #name:str,val:Lit
+
+class FuncDecl(Decl): #name:str,param:List[VarDecl],body:List[Decl]
+
+class Type(ABC): #abstract class
+
+class IntType(Type)
+
+class FloatType(Type)
+
+class Lit(ABC): #abstract class
+
+class IntLit(Lit): #val:int
+
+and exceptions:
+
+class RedeclaredVariable(Exception): #name:str
+
+class RedeclaredConstant(Exception): #name:str
+
+class RedeclaredFunction(Exception): #name:str
+
+Implement the methods of the following class Visitor to travel on the above AST to detect redeclared declarations (throw the exception corresponding to the second declaration with the same name) in the same scope:
+
+class StaticCheck(Visitor):
+
+    def visitProgram(self,ctx:Program,o:object):
+        obj = []
+        for decl in ctx.decl:
+            obj += [self.visit(decl, obj)]
+
+    def visitVarDecl(self,ctx:VarDecl,o:object):
+        name = ctx.name
+        if name in o:
+            raise RedeclaredVariable(name)
+        return name
+
+    def visitConstDecl(self,ctx:ConstDecl,o:object):
+        name = ctx.name
+        if name in o:
+            raise RedeclaredConstant(name)
+        return name
+
+    def visitFuncDecl(self,ctx:FuncDecl,o:object):
+        name = ctx.name
+        paralist = ctx.param
+        bodylist = ctx.body
+        obj = []
+        if name in o:
+            raise RedeclaredFunction(name)
+        for para in paralist:
+            obj += self.visit(para,obj)
+        for body in bodylist:
+            obj += self.visit(body,obj)
+        return name
+
+    def visitIntType(self,ctx:IntType,o:object):pass
+
+    def visitFloatType(self,ctx:FloatType,o:object):pass
+
+    def visitIntLit(self,ctx:IntLit,o:object):pass
+
+Q3
+Let AST of a programming language be defined as follows:
+
+class Program: #decl:List[Decl]
+
+class Decl(ABC): #abstract class
+
+class VarDecl(Decl): #name:str,typ:Type
+
+class ConstDecl(Decl): #name:str,val:Lit
+
+class Type(ABC): #abstract class
+
+class IntType(Type)
+
+class FloatType(Type)
+
+class Lit(ABC): #abstract class
+
+class IntLit(Lit): #val:int
+
+and exceptions:
+
+class RedeclaredVariable(Exception): #name:str
+
+class RedeclaredConstant(Exception): #name:str
+
+Implement the methods of the following class Visitor to travel on the above ASST to detect redeclared declarations (throw the exception corresponding to the second declaration with the same name):
+
+class StaticCheck(Visitor):
+
+    def visitProgram(self,ctx:Program,o:object):
+        obj = []
+        for decl in ctx.decl:
+            obj += [self.visit(decl, obj)]
+
+    def visitVarDecl(self,ctx:VarDecl,o:object):
+        name = ctx.name
+        if name in o:
+            raise RedeclaredVariable(name)
+        return name
+
+    def visitConstDecl(self,ctx:ConstDecl,o:object):
+        name = ctx.name
+        if name in o:
+            raise RedeclaredConstant(name)
+        return name
+
+    def visitIntType(self,ctx:IntType,o:object):pass
+
+    def visitFloatType(self,ctx:FloatType,o:object):pass
+
+    def visitIntLit(self,ctx:IntLit,o:object):pass
+
+Q4
+Let AST of a programming language be defined as follows:
+
+class Program: #decl:List[Decl]
+
+class Decl(ABC): #abstract class
+
+class VarDecl(Decl): #name:str,typ:Type
+
+class ConstDecl(Decl): #name:str,val:Lit
+
+class FuncDecl(Decl): #name:str,param:List[VarDecl],body:Tuple(List[Decl],List[Expr])
+
+class Type(ABC): #abstract class
+
+class IntType(Type)
+
+class FloatType(Type)
+
+class Expr(ABC): #abstract class
+
+class Lit(Expr): #abstract class
+
+class IntLit(Lit): #val:int
+
+class Id(Expr): #name:str
+
+and exceptions:
+
+class RedeclaredVariable(Exception): #name:str
+
+class RedeclaredConstant(Exception): #name:str
+
+class RedeclaredFunction(Exception): #name:str
+
+class UndeclaredIdentifier(Exception): #name:str
+
+Implement the methods of the following class Visitor to travel on the above AST to detect undeclared declarations (throw the exception UndeclaredIdentifier). Note that the redeclared declarations exception also is thrown if a redeclared declaration is detected:
+
+class StaticCheck(Visitor):
+
+    def visitProgram(self,ctx:Program,o:object):
+        obj = [[]]
+        for decl in ctx.decl:
+            obj[0] += [self.visit(decl, obj)]
+
+    def visitVarDecl(self,ctx:VarDecl,o:object):
+        name = ctx.name
+        if name in o[0]:
+            raise RedeclaredVariable(name)
+        return name
+
+    def visitConstDecl(self,ctx:ConstDecl,o:object):
+        name = ctx.name
+        if name in o[0]:
+            raise RedeclaredConstant(name)
+        return name
+
+    def visitFuncDecl(self,ctx:FuncDecl,o:object):
+        name = ctx.name
+        paralist = ctx.param
+        bodylist = ctx.body[0]
+        idlist = ctx.body[1]
+        inner_obj = [[]]
+        if name in o[0]:
+            raise RedeclaredFunction(name)
+        else:
+            o[0].append(name)
+        for para in paralist:
+            inner_obj[0] += self.visit(para, inner_obj)
+        for body in bodylist:
+            inner_obj[0] += self.visit(body, inner_obj + o)
+        for id in idlist:
+            self.visit(id, inner_obj + o)
+        return []
+
+    def visitIntType(self,ctx:IntType,o:object):pass
+
+    def visitFloatType(self,ctx:FloatType,o:object):pass
+
+    def visitIntLit(self,ctx:IntLit,o:object):pass
+
+    def visitId(self,ctx:Id,o:object):
+        name = ctx.name
+        for i in o:
+            if name in i:
+                return True
+        raise UndeclaredIdentifier(name)
+
+//////////////////////////////////////////////////////////
+
+Lecture 7
+
 Q1
 Given the AST declarations as follows:
 

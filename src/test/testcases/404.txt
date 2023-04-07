@@ -1,0 +1,1 @@
+x, y, z : string = "abd", "eex", 5 ;
