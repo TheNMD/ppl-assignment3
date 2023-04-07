@@ -22,3 +22,8 @@ class CheckerSuite(unittest.TestCase):
         input = """x, y, z : string = "abd", "eex", 5 ;"""
         expect = "Type mismatch in expression: IntegerLit(5)"
         self.assertTrue(TestChecker.test(input, expect, 404))
+        
+    def test5(self):
+        input = """x : integer = 1 + 2 ;"""
+        expect = "Type mismatch in expression: IntegerLit(5)"
+        self.assertTrue(TestChecker.test(input, expect, 405))

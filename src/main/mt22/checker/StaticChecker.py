@@ -20,19 +20,59 @@ class StaticChecker(Visitor):
         if name in param:
             raise Redeclared(kind=Variable(), identifier=name)
         if init:
-            # TODO init la BiExpr, UnExpr, ArrayCell, FuncCall, ID
+            # TODO init la BinExpr, UnExpr, ArrayCell, FuncCall, ID
             if type(typ) is IntegerType:
                 if type(init) is FloatLit or type(init) is BooleanLit or type(init) is StringLit:
                     raise TypeMismatchInExpression(init)
+                if type(init) is BinExpr:
+                    pass
+                elif type(init) is UnExpr:
+                    pass
+                elif type(init) is Id:
+                    pass
+                elif type(init) is ArrayCell:
+                    pass
+                elif type(init) is FuncCall:
+                    pass
             elif type(typ) is FloatType:
                 if type(init) is BooleanLit or type(init) is StringLit:
                     raise TypeMismatchInExpression(init)
+                if type(init) is BinExpr:
+                    pass
+                elif type(init) is UnExpr:
+                    pass
+                elif type(init) is Id:
+                    pass
+                elif type(init) is ArrayCell:
+                    pass
+                elif type(init) is FuncCall:
+                    pass
             elif type(typ) is BooleanType:
                 if type(init) is IntegerLit or type(init) is FloatLit or type(init) is StringLit:
                     raise TypeMismatchInExpression(init)
+                if type(init) is BinExpr:
+                    pass
+                elif type(init) is UnExpr:
+                    pass
+                elif type(init) is Id:
+                    pass
+                elif type(init) is ArrayCell:
+                    pass
+                elif type(init) is FuncCall:
+                    pass
             elif type(typ) is StringType:
                 if type(init) is IntegerLit or type(init) is FloatLit or type(init) is BooleanLit:
                     raise TypeMismatchInExpression(init)
+                if type(init) is BinExpr:
+                    pass
+                elif type(init) is UnExpr:
+                    pass
+                elif type(init) is Id:
+                    pass
+                elif type(init) is ArrayCell:
+                    pass
+                elif type(init) is FuncCall:
+                    pass
             elif type(typ) is ArrayType:
                 pass
             elif type(typ) is AutoType:
