@@ -24,6 +24,16 @@ class CheckerSuite(unittest.TestCase):
         self.assertTrue(TestChecker.test(input, expect, 404))
         
     def test5(self):
-        input = """x : integer = 1 + 2 ;"""
-        expect = "Type mismatch in expression: IntegerLit(5)"
+        input = """x, y : integer = 2, x ;"""
+        expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 405))
+    
+    def test6(self):
+        input = """x : string = 22 ;"""
+        expect = "Type mismatch in expression: IntegerLit(22)"
+        self.assertTrue(TestChecker.test(input, expect, 406))
+        
+    def test7(self):
+        input = """x, y : string = "22", z ;"""
+        expect = "Undeclared Variable: z"
+        self.assertTrue(TestChecker.test(input, expect, 407))
