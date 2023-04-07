@@ -31,7 +31,47 @@ class StaticChecker(Visitor):
     def visitVoidType(self, ast, param): pass  
     
     # Data literal
-    def visitBinExpr(self, ast, param): pass
+    def visitBinExpr(self, ast, param):
+        op = str(ast.op)
+        left = ast.left
+        right = ast.right
+        
+        leftValue = self.visit(ast.left, [])
+        rightValue = self.visit(ast.right, [])
+        print(leftValue, "  ", rightValue)
+        # TODO Sua lai lit thanh array
+        if op == "+" or op == "-" or op == "*" or op == "/":
+            if type(leftValue) is not int and type(leftValue) is not float:
+                if type(leftValue) is bool or type(leftValue) is str:
+                    raise TypeMismatchInExpression(left)
+                elif leftValue[1] != "integer" and leftValue[1] != "float":
+                    raise TypeMismatchInExpression(left)
+            if type(rightValue) is not int and type(rightValue) is not float:
+                if type(rightValue) is bool or type(rightValue) is str:
+                    raise TypeMismatchInExpression(right)
+                elif rightValue[1] != "integer" and rightValue[1] != "float":
+                    raise TypeMismatchInExpression(right)
+            if (type(leftValue) is not int and type(leftValue) is not float) or (type(rightValue) is not int and type(rightValue) is not float):
+                if leftValue[1] == "integer" and rightValue[1] == "integer":
+                    typ = "integer"
+                else:
+                    typ = "float"
+            else: 
+                if type(leftValue) is int and type(rightValue) is int:
+                    typ = "integer"
+                else:
+                    typ = "float"
+        elif op == "%":
+            pass
+        elif op == "&&" or op == "||":
+            pass
+        elif op == "==" or op == "!=":
+            pass
+        elif op == "<" or op == ">" or op == "<=" or op == ">=":
+            pass
+        elif op == "::":
+            pass
+        return [op, typ]
     
     def visitUnExpr(self, ast, param): pass
     
@@ -94,6 +134,7 @@ class StaticChecker(Visitor):
         
         if init:
             initValue = self.visit(ast.init, param)
+            # print(initValue)
             if typ == "integer":
                 if type(initValue) is not int:
                     if type(initValue) is float or type(initValue) is bool or type(initValue) is str:
@@ -117,11 +158,11 @@ class StaticChecker(Visitor):
                 pass
             elif typ == "auto":
                 pass
-            return [name, typ, initValue]
         else:
             if typ == "auto":
                 raise Invalid(Variable(), name)
-            return [name, typ]
+            
+        return [name, typ]
     
     def visitParamDecl(self, ast, param): pass
     
@@ -130,4 +171,4 @@ class StaticChecker(Visitor):
     def visitProgram(self, ast, param):
         for decl in ast.decls:
             param += [self.visit(decl, param)]
-        # print(param)
+        # print(param, "\n")
