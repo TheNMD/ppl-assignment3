@@ -1,1 +1,1 @@
-x : integer ;
+x : integer ; x : float ;
