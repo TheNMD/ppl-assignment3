@@ -1,0 +1,1 @@
+c, b : integer ; a : boolean = c == b ;

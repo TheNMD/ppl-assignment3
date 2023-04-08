@@ -1,0 +1,1 @@
+ x : string = "223232" ; a : string = "2" :: x ;

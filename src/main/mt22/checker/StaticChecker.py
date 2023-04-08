@@ -35,45 +35,73 @@ class StaticChecker(Visitor):
         op = str(ast.op)
         left = ast.left
         right = ast.right
+        # print(left, "  ", right)
         
-        leftValue = self.visit(ast.left, [])
-        rightValue = self.visit(ast.right, [])
-        print(leftValue, "  ", rightValue)
-        # TODO Sua lai lit thanh array
+        leftValue = self.visit(ast.left, param)
+        rightValue = self.visit(ast.right, param)
+        # print(leftValue, "  ", rightValue)
+
         if op == "+" or op == "-" or op == "*" or op == "/":
-            if type(leftValue) is not int and type(leftValue) is not float:
-                if type(leftValue) is bool or type(leftValue) is str:
-                    raise TypeMismatchInExpression(left)
-                elif leftValue[1] != "integer" and leftValue[1] != "float":
-                    raise TypeMismatchInExpression(left)
-            if type(rightValue) is not int and type(rightValue) is not float:
-                if type(rightValue) is bool or type(rightValue) is str:
-                    raise TypeMismatchInExpression(right)
-                elif rightValue[1] != "integer" and rightValue[1] != "float":
-                    raise TypeMismatchInExpression(right)
-            if (type(leftValue) is not int and type(leftValue) is not float) or (type(rightValue) is not int and type(rightValue) is not float):
-                if leftValue[1] == "integer" and rightValue[1] == "integer":
-                    typ = "integer"
-                else:
-                    typ = "float"
-            else: 
-                if type(leftValue) is int and type(rightValue) is int:
-                    typ = "integer"
-                else:
-                    typ = "float"
+            if leftValue[1] != "integer" and leftValue[1] != "float":
+                raise TypeMismatchInExpression(left)
+            if rightValue[1] != "integer" and rightValue[1] != "float":
+                raise TypeMismatchInExpression(right)
+            if leftValue[1] == "integer" and rightValue[1] == "integer":
+                typ = "integer"
+            else:
+                typ = "float"
         elif op == "%":
-            pass
+            if leftValue[1] != "integer":
+                raise TypeMismatchInExpression(left)
+            if rightValue[1] != "integer":
+                raise TypeMismatchInExpression(right)
+            typ = "integer"
         elif op == "&&" or op == "||":
-            pass
+            if leftValue[1] != "boolean":
+                raise TypeMismatchInExpression(left)
+            if rightValue[1] != "boolean":
+                raise TypeMismatchInExpression(right)
+            typ = "boolean"
         elif op == "==" or op == "!=":
-            pass
+            if leftValue[1] != "integer" and leftValue[1] != "boolean":
+                raise TypeMismatchInExpression(left)
+            if rightValue[1] != "integer" and rightValue[1] != "boolean":
+                raise TypeMismatchInExpression(right)
+            # TODO Xem lai coi raise loi o left hay right
+            if leftValue[1] != rightValue[1]:
+                 raise TypeMismatchInExpression(right)
+            typ = "boolean"
         elif op == "<" or op == ">" or op == "<=" or op == ">=":
-            pass
+            if leftValue[1] != "integer" and leftValue[1] != "float":
+                raise TypeMismatchInExpression(left)
+            if rightValue[1] != "integer" and rightValue[1] != "float":
+                raise TypeMismatchInExpression(right)
+            typ = "boolean"
         elif op == "::":
-            pass
+            if leftValue[1] != "string":
+                raise TypeMismatchInExpression(left)
+            if rightValue[1] != "string":
+                raise TypeMismatchInExpression(right)
+            typ = "string"
         return [op, typ]
     
-    def visitUnExpr(self, ast, param): pass
+    def visitUnExpr(self, ast, param):
+        op = str(ast.op)
+        val = ast.val
+        # print(val)
+        
+        valValue = self.visit(ast.val, param)
+        # print(valValue)
+
+        if op == "-":
+            if valValue[1] != "integer" and valValue[1] != "float":
+                raise TypeMismatchInExpression(val)
+            typ = valValue[1]
+        elif op == "!":
+            if valValue[1] != "boolean":
+                raise TypeMismatchInExpression(val)
+            typ = "boolean"
+        return [op, typ]
     
     def visitId(self, ast, param):
         name = ast.name
@@ -86,20 +114,22 @@ class StaticChecker(Visitor):
     def visitArrayCell(self, ast, param): pass
     
     def visitIntegerLit(self, ast, param):
-        return int(ast.val)
+        return [str(ast.val), "integer"]
     
     def visitFloatLit(self, ast, param):
-        return float(ast.val)
+        return [str(ast.val), "float"]
     
     def visitBooleanLit(self, ast, param):
-        return bool(ast.val)  
+        return [str(ast.val), "boolean"]  
 
     def visitStringLit(self, ast, param):
-        return str(ast.val)
+        return [str(ast.val), "string"]
     
     def visitArrayLit(self, ast, param): pass
     
     def visitFuncCall(self, ast, param): pass
+    
+    # TODO Xem lai subexpr
     
     # Statements
     def visitAssignStmt(self, ast, param): pass
@@ -136,23 +166,17 @@ class StaticChecker(Visitor):
             initValue = self.visit(ast.init, param)
             # print(initValue)
             if typ == "integer":
-                if type(initValue) is not int:
-                    if type(initValue) is float or type(initValue) is bool or type(initValue) is str:
-                        raise TypeMismatchInExpression(init)
-                    elif initValue[1] != "integer":
-                        raise TypeMismatchInExpression(init)
+                if initValue[1] != "integer":
+                    raise TypeMismatchInExpression(init)
             elif typ == "float":
-                if type(initValue) is not int and type(initValue) is not float:
-                    if type(initValue) is bool or type(initValue) is str:
-                        raise TypeMismatchInExpression(init)
+                if initValue[1] != "integer" and initValue[1] != "float":
+                    raise TypeMismatchInExpression(init)
             elif typ == "boolean":
-                if type(initValue) is not bool:
-                    if type(initValue) is int or type(initValue) is float or type(initValue) is str:
-                        raise TypeMismatchInExpression(init)
+                if initValue[1] != "boolean":
+                    raise TypeMismatchInExpression(init)
             elif typ == "string":
-                if type(initValue) is not str:
-                    if type(initValue) is int or type(initValue) is float or type(initValue) is bool:
-                        raise TypeMismatchInExpression(init)
+                if initValue[1] != "string":
+                    raise TypeMismatchInExpression(init)
             # TODO ArrayType and AutoType
             elif typ == "array":
                 pass

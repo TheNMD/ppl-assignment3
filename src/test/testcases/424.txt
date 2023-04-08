@@ -1,0 +1,1 @@
+a, b, c : integer ; d : float = a + b + c ;
