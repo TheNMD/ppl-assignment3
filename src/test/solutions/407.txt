@@ -1,1 +1,1 @@
-Undeclared Variable: z
+Undeclared Identifier: z

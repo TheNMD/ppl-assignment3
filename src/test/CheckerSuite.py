@@ -35,7 +35,7 @@ class CheckerSuite(unittest.TestCase):
         
     def test7(self):
         input = """x, y : string = "22", z ;"""
-        expect = "Undeclared Variable: z"
+        expect = "Undeclared Identifier: z"
         self.assertTrue(TestChecker.test(input, expect, 407))
     
     def test8(self):
@@ -191,4 +191,79 @@ class CheckerSuite(unittest.TestCase):
     def test38(self):
         input = """ a : string = "false" ; x : boolean = !a ;"""
         expect = "Type mismatch in expression: Id(a)"
-        self.assertTrue(TestChecker.test(input, expect, 438))                                                                
+        self.assertTrue(TestChecker.test(input, expect, 438))
+        
+    def test39(self):
+        input = """ x : integer ; a : array [1,2] of integer = {1, 2, x} ;"""
+        expect = "[]"
+        self.assertTrue(TestChecker.test(input, expect, 439))
+        
+    def test40(self):
+        input = """ x : float ; a : array [1,2] of integer = {1, 2, x} ;"""
+        expect = "Illegal array literal: Id(x)"
+        self.assertTrue(TestChecker.test(input, expect, 440))
+        
+    def test41(self):
+        input = """ a : array [1,2] of integer = {1, 2, x} ;"""
+        expect = "Undeclared Identifier: x"
+        self.assertTrue(TestChecker.test(input, expect, 441))
+        
+    def test42(self):
+        input = """ a : array [1,2] of integer = {1 + 2, 3 + 4} ;"""
+        expect = "[]"
+        self.assertTrue(TestChecker.test(input, expect, 442))
+        
+    def test43(self):
+        input = """ a : array [1,2] of integer = {1, true} ;"""
+        expect = "Illegal array literal: BooleanLit(True)"
+        self.assertTrue(TestChecker.test(input, expect, 443))
+        
+    def test43(self):
+        input = """ a : array [1,2] of integer = {true, 1} ;"""
+        expect = "Illegal array literal: IntegerLit(1)"
+        self.assertTrue(TestChecker.test(input, expect, 443))
+        
+    def test44(self):
+        input = """ x, y : integer ; a : array [1,2] of integer = {1 + x, 2 * y} ;"""
+        expect = "[]"
+        self.assertTrue(TestChecker.test(input, expect, 444))
+        
+    def test45(self):
+        input = """ x, y : integer ; b : array [2, 3] of integer ; a : array [1,2] of integer = {1 + x, 2 * b} ;"""
+        expect = "Type mismatch in expression: Id(b)"
+        self.assertTrue(TestChecker.test(input, expect, 445))
+        
+    def test46(self):
+        input = """ a : array [1,2] of integer = {true, true, false} ;"""
+        expect = "Type mismatch in expression: ArrayLit([BooleanLit(True), BooleanLit(True), BooleanLit(False)])"
+        self.assertTrue(TestChecker.test(input, expect, 446))
+        
+    def test47(self):
+        input = """ a : array [1, 2] of integer ; b : integer = a[2] ;"""
+        expect = "[]"
+        self.assertTrue(TestChecker.test(input, expect, 447))
+        
+    def test48(self):
+        input = """ b : integer = a[2] ;"""
+        expect = "Undeclared Identifier: a"
+        self.assertTrue(TestChecker.test(input, expect, 448))
+        
+    def test49(self):
+        input = """ a : integer ; b : integer = a[2] ;"""
+        expect = "Type mismatch in expression: a"
+        self.assertTrue(TestChecker.test(input, expect, 449))
+        
+    def test50(self):
+        input = """ a : array [1,2] of integer ; b : integer = a[2, 3, 5] ;"""
+        expect = "[]"
+        self.assertTrue(TestChecker.test(input, expect, 450))
+        
+    def test51(self):
+        input = """ a : array [1,2] of integer ; b : integer = a[2.2] ;"""
+        expect = "Type mismatch in expression: FloatLit(2.2)"
+        self.assertTrue(TestChecker.test(input, expect, 451))
+        
+    def test52(self):
+        input = """ a : array [1,2] of integer ; b : integer = a[1 + 2] ;"""
+        expect = "Type mismatch in expression: BinExpr(+, IntegerLit(1), IntegerLit(2))"
+        self.assertTrue(TestChecker.test(input, expect, 452))                                                                                                                                                    
