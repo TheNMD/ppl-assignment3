@@ -12,25 +12,25 @@ class StaticChecker(Visitor):
     
     # Data type
     def visitIntegerType(self, ast, param):
-        return ["IntegerType", "@", ['0']]
+        return ["IntegerType", "@", "@"]
     
     def visitFloatType(self, ast, param):
-        return ["FloatType", "@", ['0']]
+        return ["FloatType", "@", "@"]
     
     def visitBooleanType(self, ast, param):
-        return ["BooleanType", "@", ['0']]
+        return ["BooleanType", "@", "@"]
     
     def visitStringType(self, ast, param):
-        return ["StringType", "@", ['0']]
+        return ["StringType", "@", "@"]
     
     def visitArrayType(self, ast, param):
         return ["ArrayType", str(ast.typ), ast.dimensions]
     
     def visitAutoType(self, ast, param):
-        return ["AutoType", "@", ['0']]
+        return ["AutoType", "@", "@"]
     
     def visitVoidType(self, ast, param):
-        return ["VoidType", "@", ['0']]  
+        return ["VoidType", "@", "@"]  
     
     # Data literal
     def visitBinExpr(self, ast, param):
@@ -83,7 +83,7 @@ class StaticChecker(Visitor):
             if rightValue[1] != "StringType":
                 raise TypeMismatchInExpression(right)
             typ = "StringType"
-        return [op, typ]
+        return ["@", typ]
     
     def visitUnExpr(self, ast, param):
         op = str(ast.op)
@@ -99,7 +99,7 @@ class StaticChecker(Visitor):
             if valValue[1] != "BooleanType":
                 raise TypeMismatchInExpression(val)
             typ = "BooleanType"
-        return [op, typ]
+        return ["@", typ]
     
     def visitId(self, ast, param):
         name = ast.name
@@ -204,22 +204,51 @@ class StaticChecker(Visitor):
             elif typ == "ArrayType":
                 if initValue[1] != array_typ:
                     raise TypeMismatchInExpression(init)
-            # TODO
             elif typ == "AutoType":
-                pass
+                typ = initValue[1]
         else:
             if typ == "AutoType":
                 raise Invalid(Variable(), name)
-
-        return [name, typ, array_typ, dim]
+        # id name, id type, array type if id is array, array dimension if id is array
+        return [name, typ, array_typ, dim, "@", "@"]
     
     # TODO
-    def visitParamDecl(self, ast, param): pass
-    
+    def visitParamDecl(self, ast, param):
+        name = ast.name
+        visitRes = self.visit(ast.typ, [])
+        typ, array_typ, dim = visitRes[0], visitRes[1], visitRes[2]
+        out = ast.out
+        inherit = ast.inherit
+        
+        return [name, typ, array_typ, dim, out, inherit]
+        
     # TODO
-    def visitFuncDecl(self, ast, param): pass
+    def visitFuncDecl(self, ast, param):
+        name = ast.name
+        visitRes = self.visit(ast.return_type, [])
+        rtn_typ, array_typ, dim = visitRes[0], visitRes[1], visitRes[2]
+        paraList = ast.params
+        inherit = ast.inherit
+        body = ast.body
+    
+        for id in param:
+            if name == id[0]:
+                raise Redeclared(Variable(), name)
+        
+        if paraList:
+            for para in paraList:
+                param += [[self.visit(para, param)]]
+        else:
+            pass
+        
+        if body:
+            print(body)
+        else:
+            pass
+        
+        return [name, rtn_typ, array_typ, dim, "@", inherit]
     
     def visitProgram(self, ast, param):
         for decl in ast.decls:
             param += [self.visit(decl, param)]
-        # print(param, "\n")
+        print(param, "\n")
