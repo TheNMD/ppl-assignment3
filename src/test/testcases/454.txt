@@ -1,1 +1,1 @@
- main : function integer (a : integer, b : float) {} 
+ a : integer = 4 ; b : float = (a + 3) / 4 ; 

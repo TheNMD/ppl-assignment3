@@ -12,32 +12,32 @@ class StaticChecker(Visitor):
     
     # Data type
     def visitIntegerType(self, ast, param):
-        return ["IntegerType", "@", "@"]
+        return ["IntegerType", "@NA", "@NA"]
     
     def visitFloatType(self, ast, param):
-        return ["FloatType", "@", "@"]
+        return ["FloatType", "@NA", "@NA"]
     
     def visitBooleanType(self, ast, param):
-        return ["BooleanType", "@", "@"]
+        return ["BooleanType", "@NA", "@NA"]
     
     def visitStringType(self, ast, param):
-        return ["StringType", "@", "@"]
+        return ["StringType", "@NA", "@NA"]
     
     def visitArrayType(self, ast, param):
         return ["ArrayType", str(ast.typ), ast.dimensions]
     
     def visitAutoType(self, ast, param):
-        return ["AutoType", "@", "@"]
+        return ["AutoType", "@NA", "@NA"]
     
     def visitVoidType(self, ast, param):
-        return ["VoidType", "@", "@"]  
+        return ["VoidType", "@NA", "@NA"]  
     
     # Data literal
     def visitBinExpr(self, ast, param):
         op = str(ast.op)
         left = ast.left
         right = ast.right
-        
+
         leftValue = self.visit(ast.left, param)
         rightValue = self.visit(ast.right, param)
 
@@ -83,7 +83,7 @@ class StaticChecker(Visitor):
             if rightValue[1] != "StringType":
                 raise TypeMismatchInExpression(right)
             typ = "StringType"
-        return ["@", typ]
+        return ["@NA", typ]
     
     def visitUnExpr(self, ast, param):
         op = str(ast.op)
@@ -99,7 +99,7 @@ class StaticChecker(Visitor):
             if valValue[1] != "BooleanType":
                 raise TypeMismatchInExpression(val)
             typ = "BooleanType"
-        return ["@", typ]
+        return ["@NA", typ]
     
     def visitId(self, ast, param):
         name = ast.name
@@ -119,23 +119,23 @@ class StaticChecker(Visitor):
                     for idx in cell:
                         if type(idx) != IntegerLit:
                             raise TypeMismatchInExpression(idx)
-                    return ["@", id[2]]
+                    return ["@NA", id[2]]
                 else:
                     raise TypeMismatchInExpression(name)
         else:
             raise Undeclared(Identifier(), name)
     
     def visitIntegerLit(self, ast, param):
-        return ["@", "IntegerType"]
+        return ["@NA", "IntegerType"]
     
     def visitFloatLit(self, ast, param):
-        return ["@", "FloatType"]
+        return ["@NA", "FloatType"]
     
     def visitBooleanLit(self, ast, param):
-        return ["@", "BooleanType"]  
+        return ["@NA", "BooleanType"]  
 
     def visitStringLit(self, ast, param):
-        return ["@", "StringType"]
+        return ["@NA", "StringType"]
     
     def visitArrayLit(self, ast, param):
         explist = ast.explist
@@ -147,12 +147,10 @@ class StaticChecker(Visitor):
         for i in range(len(typArr) - 1):
             if typArr[i] != typArr[i + 1]:
                 raise IllegalArrayLiteral(explist[i + 1])
-        return ["@", typArr[0]]
+        return ["@NA", typArr[0]]
     
     # TODO
     def visitFuncCall(self, ast, param): pass
-    
-    # TODO Exclude subexpr
     
     # Statements
     # TODO
@@ -186,6 +184,8 @@ class StaticChecker(Visitor):
         for id in param:
             if name == id[0]:
                 raise Redeclared(Variable(), name)
+            
+        param += [[name, typ, array_typ, dim, "@NA", "@NA", "@NA"]]
         
         if init:
             initValue = self.visit(ast.init, param)
@@ -209,8 +209,6 @@ class StaticChecker(Visitor):
         else:
             if typ == "AutoType":
                 raise Invalid(Variable(), name)
-        # id name, id type, array type if id is array, array dimension if id is array
-        return [name, typ, array_typ, dim, "@", "@"]
     
     # TODO
     def visitParamDecl(self, ast, param):
@@ -220,14 +218,14 @@ class StaticChecker(Visitor):
         out = ast.out
         inherit = ast.inherit
         
-        return [name, typ, array_typ, dim, out, inherit]
+        return [name, typ, array_typ, dim, out, inherit, "@NA"]
         
     # TODO
     def visitFuncDecl(self, ast, param):
         name = ast.name
         visitRes = self.visit(ast.return_type, [])
         rtn_typ, array_typ, dim = visitRes[0], visitRes[1], visitRes[2]
-        paraList = ast.params
+        params = ast.params
         inherit = ast.inherit
         body = ast.body
     
@@ -235,20 +233,46 @@ class StaticChecker(Visitor):
             if name == id[0]:
                 raise Redeclared(Variable(), name)
         
-        if paraList:
-            for para in paraList:
-                param += [[self.visit(para, param)]]
+        if params:
+            paraList = []
+            for para in params:
+                paraList += [self.visit(para, [])]
         else:
             pass
         
-        if body:
-            print(body)
-        else:
-            pass
+        accessibleList = []
+        for i in param:
+            accessibleList += [i[0]]
+        for i in paraList:
+            accessibleList += [i[0]]
         
-        return [name, rtn_typ, array_typ, dim, "@", inherit]
-    
+        param += [[name, rtn_typ, array_typ, dim, "@NA", inherit, accessibleList]]
+        
+        if body: pass
+        
+        for i in range(len(param)):
+            if name == param[i][0]:
+                break
+            if param[i][6] != "@NA":
+                param[i][6] += [name]
+        
     def visitProgram(self, ast, param):
         for decl in ast.decls:
-            param += [self.visit(decl, param)]
-        print(param, "\n")
+            self.visit(decl, param)
+        
+        for i in range(len(param)):
+            print("////////////////////////")
+            print(f"Ele {i}")
+            print(f"Name: {param[i][0]}")
+            print(f"Type: {param[i][1]}")
+            print(f"Array type: {param[i][2]}")
+            print(f"Array dim: {param[i][3]}")
+            print(f"Out: {param[i][4]}")
+            print(f"Inherit: {param[i][5]}")
+            print(f"Accessible list: {param[i][6]}")
+            print("\n")
+            
+        # param: id name, id type, array type, array dim, out, inherit, para list
+        # visitRes: id type, array type, array dim 
+        # init : "@NA", literal type
+        # "@NA" means not available

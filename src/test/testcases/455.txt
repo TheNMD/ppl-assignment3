@@ -1,0 +1,1 @@
+ a : integer = 4 ; b : string = !(((a + 3) / 4) >= 8) ; 

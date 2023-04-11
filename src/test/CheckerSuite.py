@@ -4,8 +4,8 @@ from AST import *
 
 class CheckerSuite(unittest.TestCase):
     # def test1(self):
-    #     input = """x : integer ; x : float ;"""
-    #     expect = "Redeclared Variable: x"
+    #     input = """x : integer = x + 1 ;"""
+    #     expect = "[]"
     #     self.assertTrue(TestChecker.test(input, expect, 401))
         
     # def test2(self):
@@ -99,8 +99,8 @@ class CheckerSuite(unittest.TestCase):
     #     self.assertTrue(TestChecker.test(input, expect, 419))
         
     # def test20(self):
-    #     input = """a : float = 8 % 2 ;"""
-    #     expect = "[]"
+    #     input = """a : float = a % 2 ;"""
+    #     expect = "Type mismatch in expression: Id(a)"
     #     self.assertTrue(TestChecker.test(input, expect, 420))
         
     # def test21(self):
@@ -114,7 +114,7 @@ class CheckerSuite(unittest.TestCase):
     #     self.assertTrue(TestChecker.test(input, expect, 422))
         
     # def test23(self):
-    #     input = """c, b : integer ; a : boolean = c == b ;"""
+    #     input = """c, b : integer ; a : boolean = a && (c == b) ;"""
     #     expect = "[]"
     #     self.assertTrue(TestChecker.test(input, expect, 423))
         
@@ -273,7 +273,17 @@ class CheckerSuite(unittest.TestCase):
     #     expect = "[]"
     #     self.assertTrue(TestChecker.test(input, expect, 453))
         
-    def test54(self):
-        input = """ main : function integer (a : integer, b : float) {} """
+    # def test54(self):
+    #     input = """ a : integer = 4 ; b : float = (a + 3) / 4 ; """
+    #     expect = "[]"
+    #     self.assertTrue(TestChecker.test(input, expect, 454))
+        
+    # def test55(self):
+    #     input = """ a : integer = 4 ; b : string = !(((a + 3) / 4) >= 8) ; """
+    #     expect = "Type mismatch in expression: UnExpr(!, BinExpr(>=, BinExpr(/, BinExpr(+, Id(a), IntegerLit(3)), IntegerLit(4)), IntegerLit(8)))"
+    #     self.assertTrue(TestChecker.test(input, expect, 455))  
+        
+    def test56(self):
+        input = """ main1 : function integer (a : integer, b : float) {} main2 : function integer (c : integer, d : float) {} main3 : function integer (e : integer, f : float) {} """
         expect = "[]"
-        self.assertTrue(TestChecker.test(input, expect, 454))                                                                                                                                                                
+        self.assertTrue(TestChecker.test(input, expect, 456))                                                                                                                                                                
