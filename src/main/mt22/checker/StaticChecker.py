@@ -248,13 +248,14 @@ class StaticChecker(Visitor):
         
         param += [[name, rtn_typ, array_typ, dim, "@NA", inherit, accessibleList]]
         
-        if body: pass
+        if body: pass        
         
-        for i in range(len(param)):
-            if name == param[i][0]:
-                break
-            if param[i][6] != "@NA":
-                param[i][6] += [name]
+        # TODO xem lai declare 2 fuction tro len thi function truoc khong access duoc function sau
+        # for i in range(len(param)):
+        #     if name == param[i][0]:
+        #         break
+        #     if param[i][6] != "@NA":
+        #         param[i][6] += [name]
         
     def visitProgram(self, ast, param):
         for decl in ast.decls:
