@@ -1,6 +1,34 @@
 from AST import *
 from Visitor import Visitor
 from StaticError import *
+
+class Variable:
+    def __init__(self, name, typ, array_typ, dim):
+        self.name = name
+        self.typ = typ
+        self.array_typ = array_typ
+        self.dim = dim
+
+class Parameter:
+    def __init__(self, name, typ, rtn_typ, array_typ, dim, inherit):
+        self.name = name
+        self.typ = typ
+        self.rtn_typ = rtn_typ
+        self.array_typ = array_typ
+        self.dim = dim
+        self.inherit = inherit
+        
+class Function:
+    def __init__(self, name, typ, array_typ, dim, out, inherit, short_paraList, accessibleList):
+        self.name = name
+        self.typ = typ
+        self.array_typ = array_typ
+        self.dim = dim
+        self.out = out
+        self.inherit = inherit
+        self.short_paraList = short_paraList
+        self.accessibleList = accessibleList
+
 class StaticChecker(Visitor):
     
     def __init__(self, ast):
@@ -157,6 +185,7 @@ class StaticChecker(Visitor):
             if name == id[0] and id[1] == "FunctionType":
                 if id[2] == "VoidType":
                     raise TypeMismatchInExpression(ast)
+                # TODO Xem lai coi so arg khac so para thi loi gi
                 if len(args) != len(id[6]):
                     raise TypeMismatchInExpression(ast)
                 for i in range(len(args)):
@@ -230,8 +259,7 @@ class StaticChecker(Visitor):
     # TODO
     def visitParamDecl(self, ast, param):
         name = ast.name
-        visitRes = self.visit(ast.typ, [])
-        typ, array_typ, dim = visitRes[0], visitRes[1], visitRes[2]
+        typ, array_typ, dim = self.visit(ast.typ, [])
         out = ast.out
         inherit = ast.inherit
         
@@ -244,8 +272,7 @@ class StaticChecker(Visitor):
     # TODO
     def visitFuncDecl(self, ast, param):
         name = ast.name
-        visitRes = self.visit(ast.return_type, [])
-        rtn_typ, array_typ, dim = visitRes[0], visitRes[1], visitRes[2]
+        rtn_typ, array_typ, dim = self.visit(ast.return_type, [])
         params = ast.params
         inherit = ast.inherit
         body = ast.body
