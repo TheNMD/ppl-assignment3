@@ -208,19 +208,19 @@ class StaticChecker(Visitor):
             initValue = self.visit(ast.init, param)
             if typ == "IntegerType":
                 if initValue != "IntegerType":
-                    raise TypeMismatchInExpression(init)
+                    raise TypeMismatchInVarDecl(init)
             elif typ == "FloatType":
                 if initValue != "IntegerType" and initValue != "FloatType":
-                    raise TypeMismatchInExpression(init)
+                    raise TypeMismatchInVarDecl(init)
             elif typ == "BooleanType":
                 if initValue != "BooleanType":
-                    raise TypeMismatchInExpression(init)
+                    raise TypeMismatchInVarDecl(init)
             elif typ == "StringType":
                 if initValue != "StringType":
-                    raise TypeMismatchInExpression(init)
+                    raise TypeMismatchInVarDecl(init)
             elif typ == "ArrayType":
                 if initValue != array_typ:
-                    raise TypeMismatchInExpression(init)
+                    raise TypeMismatchInVarDecl(init)
             elif typ == "AutoType":
                 typ = initValue
         else:
