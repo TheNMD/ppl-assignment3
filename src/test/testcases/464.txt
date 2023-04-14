@@ -1,0 +1,1 @@
+ main : function integer (a : integer, b : float) {} main1 : function integer (c : integer, inherit a : integer) inherit main {} 

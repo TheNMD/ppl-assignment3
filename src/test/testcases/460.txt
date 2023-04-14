@@ -1,1 +1,1 @@
- main : function integer (a : integer, b : float) {} x : integer = main(1 , 1) ;
+ main : function integer (a : integer, b : float) {} x : integer = main(1.4 , 1) ;
