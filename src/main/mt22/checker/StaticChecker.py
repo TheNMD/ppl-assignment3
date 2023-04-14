@@ -104,7 +104,7 @@ class StaticChecker(Visitor):
     def visitId(self, ast, param):
         name = ast.name
         for id in param:
-            if name == id[0]:
+            if name == id[0] and id[1] != "FunctionType":
                 return id[1]
         else:
             raise Undeclared(Identifier(), name)
@@ -114,7 +114,7 @@ class StaticChecker(Visitor):
         cell = ast.cell
         
         for id in param:
-            if name == id[0]:
+            if name == id[0] and id[1] != "FunctionType":
                 if id[1] == "ArrayType":
                     for idx in cell:
                         if type(idx) != IntegerLit:
@@ -150,7 +150,25 @@ class StaticChecker(Visitor):
         return typArr[0]
     
     # TODO
-    def visitFuncCall(self, ast, param): pass
+    def visitFuncCall(self, ast, param):
+        name = ast.name
+        args = ast.args
+        for id in param:
+            if name == id[0] and id[1] == "FunctionType":
+                if id[2] == "VoidType":
+                    raise TypeMismatchInExpression(ast)
+                if len(args) != len(id[6]):
+                    raise TypeMismatchInExpression(ast)
+                for i in range(len(args)):
+                    arg = self.visit(args[i], [])
+                    para = id[6][i]
+                    if arg != para:
+                        if para == "FloatType" and arg == "IntegerType":
+                            continue
+                        raise TypeMismatchInExpression(args[i])
+                return id[2]
+        else:
+            raise Undeclared(Function(), name)
     
     # Statements
     # TODO
@@ -181,7 +199,7 @@ class StaticChecker(Visitor):
         init = ast.init
         
         for id in param:
-            if name == id[0]:
+            if name == id[0] and id[1] != "FunctionType":
                 raise Redeclared(Variable(), name)
             
         param += [[name, typ, array_typ, dim]]
@@ -218,10 +236,10 @@ class StaticChecker(Visitor):
         inherit = ast.inherit
         
         for id in param:
-            if name == id[0]:
-                raise Redeclared(Variable(), name)
+            if name == id[0] and id[1] != "FunctionType":
+                raise Redeclared(Parameter(), name)
         
-        return [name, typ, array_typ, dim, out, inherit]
+        param += [[name, typ, array_typ, dim, out, inherit]]
         
     # TODO
     def visitFuncDecl(self, ast, param):
@@ -233,23 +251,24 @@ class StaticChecker(Visitor):
         body = ast.body
     
         for id in param:
-            if name == id[0]:
-                raise Redeclared(Variable(), name)
+            if name == id[0] and id[1] == "FunctionType":
+                raise Redeclared(Function(), name)
         
+        paraList = []
         if params:
             paraList = []
             for para in params:
-                paraList += [self.visit(para, paraList)]
-        else:
-            pass
+                self.visit(para, paraList)
         
         accessibleList = []
+        short_paraList = []
         for i in param:
-            accessibleList += [i[0]]
+            accessibleList += [[i[0], i[1]]]
         for i in paraList:
-            accessibleList += [i[0]]
+            short_paraList += [i[1]]
+            accessibleList += [[i[0], i[1]]]
         
-        param += [[name, rtn_typ, array_typ, dim, inherit, accessibleList]]
+        param += [[name, "FunctionType", rtn_typ, array_typ, dim, inherit, short_paraList, accessibleList]]
         
         if body: pass        
         
@@ -257,18 +276,4 @@ class StaticChecker(Visitor):
         for decl in ast.decls:
             self.visit(decl, param)
         
-        # for i in range(len(param)):
-        #     print("////////////////////////")
-        #     print(f"Ele {i}")
-        #     print(f"Name: {param[i][0]}")
-        #     print(f"Type: {param[i][1]}")
-        #     print(f"Array type: {param[i][2]}")
-        #     print(f"Array dim: {param[i][3]}")
-        #     print(f"Out: {param[i][4]}")
-        #     print(f"Inherit: {param[i][5]}")
-        #     print(f"Accessible list: {param[i][6]}")
-        #     print("\n")
-            
-        # param: id name, id type, array type, array dim, out, inherit, para list
-        # visitRes: id type, array type, array dim 
-        # init : literal type
+        print(param)

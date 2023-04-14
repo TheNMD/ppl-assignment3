@@ -1,0 +1,1 @@
+ main, b, c : integer ; main : function integer (a : integer, b : float) {}
