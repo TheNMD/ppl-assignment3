@@ -2,31 +2,31 @@ from AST import *
 from Visitor import Visitor
 from StaticError import *
 
-class Variable:
+class VariableDeclaration:
     def __init__(self, name, typ, array_typ, dim):
         self.name = name
         self.typ = typ
         self.array_typ = array_typ
         self.dim = dim
 
-class Parameter:
-    def __init__(self, name, typ, rtn_typ, array_typ, dim, inherit):
-        self.name = name
-        self.typ = typ
-        self.rtn_typ = rtn_typ
-        self.array_typ = array_typ
-        self.dim = dim
-        self.inherit = inherit
-        
-class Function:
-    def __init__(self, name, typ, array_typ, dim, out, inherit, short_paraList, accessibleList):
+class ParameterDeclaration:
+    def __init__(self, name, typ, array_typ, dim, out, inherit):
         self.name = name
         self.typ = typ
         self.array_typ = array_typ
         self.dim = dim
         self.out = out
         self.inherit = inherit
-        self.short_paraList = short_paraList
+        
+class FunctionDeclaration:
+    def __init__(self, name, typ, rtn_typ, array_typ, dim, inherit, short_accessibleList, accessibleList):
+        self.name = name
+        self.typ = typ
+        self.rtn_typ = rtn_typ
+        self.array_typ = array_typ
+        self.dim = dim
+        self.inherit = inherit
+        self.short_accessibleList = short_accessibleList
         self.accessibleList = accessibleList
 
 class StaticChecker(Visitor):
@@ -131,9 +131,9 @@ class StaticChecker(Visitor):
     
     def visitId(self, ast, param):
         name = ast.name
-        for id in param:
-            if name == id[0] and id[1] != "FunctionType":
-                return id[1]
+        for ele in param:
+            if name == ele.name and ele.typ != "FunctionType":
+                return ele.typ
         else:
             raise Undeclared(Identifier(), name)
     
@@ -141,13 +141,13 @@ class StaticChecker(Visitor):
         name = ast.name
         cell = ast.cell
         
-        for id in param:
-            if name == id[0] and id[1] != "FunctionType":
-                if id[1] == "ArrayType":
+        for ele in param:
+            if name == ele.name and ele.typ != "FunctionType":
+                if ele.typ == "ArrayType":
                     for idx in cell:
                         if type(idx) != IntegerLit:
                             raise TypeMismatchInExpression(idx)
-                    return id[2]
+                    return ele.array_typ
                 else:
                     raise TypeMismatchInExpression(name)
         else:
@@ -181,21 +181,21 @@ class StaticChecker(Visitor):
     def visitFuncCall(self, ast, param):
         name = ast.name
         args = ast.args
-        for id in param:
-            if name == id[0] and id[1] == "FunctionType":
-                if id[2] == "VoidType":
+        for ele in param:
+            if name == ele.name and ele.typ == "FunctionType":
+                if ele.rtn_typ == "VoidType":
                     raise TypeMismatchInExpression(ast)
                 # TODO Xem lai coi so arg khac so para thi loi gi
-                if len(args) != len(id[6]):
+                if len(args) != len(ele.short_accessibleList):
                     raise TypeMismatchInExpression(ast)
                 for i in range(len(args)):
                     arg = self.visit(args[i], [])
-                    para = id[6][i]
+                    para = ele.short_accessibleList[i]
                     if arg != para:
                         if para == "FloatType" and arg == "IntegerType":
                             continue
                         raise TypeMismatchInExpression(args[i])
-                return id[2]
+                return ele.rtn_typ
         else:
             raise Undeclared(Function(), name)
     
@@ -227,29 +227,30 @@ class StaticChecker(Visitor):
         typ, array_typ, dim = self.visit(ast.typ, [])
         init = ast.init
         
-        for id in param:
-            if name == id[0] and id[1] != "FunctionType":
+        for ele in param:
+            if name == ele.name and ele.typ != "FunctionType":
                 raise Redeclared(Variable(), name)
             
-        param += [[name, typ, array_typ, dim]]
+        param += [VariableDeclaration(name, typ, array_typ, dim)]
         
         if init:
             initValue = self.visit(ast.init, param)
+            # TODO Xem lai TypeMismatchInVarDecl quang o dau
             if typ == "IntegerType":
                 if initValue != "IntegerType":
-                    raise TypeMismatchInVarDecl(init)
+                    raise TypeMismatchInExpression(init)
             elif typ == "FloatType":
                 if initValue != "IntegerType" and initValue != "FloatType":
-                    raise TypeMismatchInVarDecl(init)
+                    raise TypeMismatchInExpression(init)
             elif typ == "BooleanType":
                 if initValue != "BooleanType":
-                    raise TypeMismatchInVarDecl(init)
+                    raise TypeMismatchInExpression(init)
             elif typ == "StringType":
                 if initValue != "StringType":
-                    raise TypeMismatchInVarDecl(init)
+                    raise TypeMismatchInExpression(init)
             elif typ == "ArrayType":
                 if initValue != array_typ:
-                    raise TypeMismatchInVarDecl(init)
+                    raise TypeMismatchInExpression(init)
             elif typ == "AutoType":
                 typ = initValue
         else:
@@ -263,11 +264,11 @@ class StaticChecker(Visitor):
         out = ast.out
         inherit = ast.inherit
         
-        for id in param:
-            if name == id[0] and id[1] != "FunctionType":
+        for ele in param:
+            if name == ele.name and ele.typ != "FunctionType":
                 raise Redeclared(Parameter(), name)
         
-        param += [[name, typ, array_typ, dim, out, inherit]]
+        param += [ParameterDeclaration(name, typ, array_typ, dim, out, inherit)]
         
     # TODO
     def visitFuncDecl(self, ast, param):
@@ -277,8 +278,8 @@ class StaticChecker(Visitor):
         inherit = ast.inherit
         body = ast.body
     
-        for id in param:
-            if name == id[0] and id[1] == "FunctionType":
+        for ele in param:
+            if name == ele.name and ele.typ == "FunctionType":
                 raise Redeclared(Function(), name)
         
         paraList = []
@@ -288,14 +289,14 @@ class StaticChecker(Visitor):
                 self.visit(para, paraList)
         
         accessibleList = []
-        short_paraList = []
+        short_accessibleList = []
         for i in param:
-            accessibleList += [[i[0], i[1]]]
+            accessibleList += [[i.name, i.typ]]
         for i in paraList:
-            short_paraList += [i[1]]
-            accessibleList += [[i[0], i[1]]]
+            short_accessibleList += [i.typ]
+            accessibleList += [[i.name, i.typ]]
         
-        param += [[name, "FunctionType", rtn_typ, array_typ, dim, inherit, short_paraList, accessibleList]]
+        param += [FunctionDeclaration(name, "FunctionType", rtn_typ, array_typ, dim, inherit, short_accessibleList, accessibleList)]
         
         if body: pass        
         
@@ -303,4 +304,4 @@ class StaticChecker(Visitor):
         for decl in ast.decls:
             self.visit(decl, param)
         
-        print(param)
+        # print(param)
