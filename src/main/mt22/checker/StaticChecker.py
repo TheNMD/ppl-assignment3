@@ -68,6 +68,24 @@ class StaticChecker(Visitor):
 
         leftValue = self.visit(ast.left, param)
         rightValue = self.visit(ast.right, param)
+        
+        if leftValue == "AutoType":
+            TypeMismatchInExpression(left)
+        elif rightValue == "AutoType":
+            TypeMismatchInExpression(right)
+        elif  leftValue == "FAutoType" and rightValue == "FAutoType":
+            # TODO Xem lai raise loi nhu the nao khi left va right deu la FAutoType
+            raise TypeMismatchInExpression(ast)
+        elif leftValue == "FAutoType" and rightValue != "FAutoType":
+            leftValue = rightValue
+            for ele in param:
+                if ele.name == left.name and ele.typ == "FunctionType":
+                    ele.rtn_typ = rightValue
+        elif leftValue != "FAutoType" and rightValue == "FAutoType":
+            rightValue = leftValue
+            for ele in param:
+                if ele.name == right.name and ele.typ == "FunctionType":
+                    ele.rtn_typ = leftValue
 
         if op == "+" or op == "-" or op == "*" or op == "/":
             if leftValue != "IntegerType" and leftValue != "FloatType":
@@ -166,18 +184,8 @@ class StaticChecker(Visitor):
         return "StringType"
     
     def visitArrayLit(self, ast, param):
-        explist = ast.explist
-        typArr = []
-        for exp in explist:
-            ele = self.visit(exp, param)
-            typArr.append(ele)
-        # TODO Xem lai raise loi o element ben phai hay element ben trai
-        for i in range(len(typArr) - 1):
-            if typArr[i] != typArr[i + 1]:
-                raise IllegalArrayLiteral(explist[i + 1])
-        return typArr[0]
-    
-    # TODO
+        return ast.explist
+
     def visitFuncCall(self, ast, param):
         name = ast.name
         args = ast.args
@@ -195,12 +203,13 @@ class StaticChecker(Visitor):
                         if para == "FloatType" and arg == "IntegerType":
                             continue
                         raise TypeMismatchInExpression(args[i])
+                if ele.rtn_typ == "AutoType":
+                    return "FAutoType"
                 return ele.rtn_typ
         else:
             raise Undeclared(Function(), name)
     
     # Statements
-    # TODO
     def visitAssignStmt(self, ast, param): pass
     
     def visitBlockStmt(self, ast, param):
@@ -239,29 +248,48 @@ class StaticChecker(Visitor):
         
         if init:
             initValue = self.visit(ast.init, param)
+            if initValue == "AutoType":
+                raise TypeMismatchInExpression(init)
+            elif initValue == "FAutoType":
+                initValue = typ
+                for ele in param:
+                    if init.name == ele.name and ele.typ == "FunctionType":
+                        ele.rtn_typ = initValue
+            else:
             # TODO Xem lai TypeMismatchInVarDecl quang o dau
-            if typ == "IntegerType":
-                if initValue != "IntegerType":
-                    raise TypeMismatchInExpression(init)
-            elif typ == "FloatType":
-                if initValue != "IntegerType" and initValue != "FloatType":
-                    raise TypeMismatchInExpression(init)
-            elif typ == "BooleanType":
-                if initValue != "BooleanType":
-                    raise TypeMismatchInExpression(init)
-            elif typ == "StringType":
-                if initValue != "StringType":
-                    raise TypeMismatchInExpression(init)
-            elif typ == "ArrayType":
-                if initValue != array_typ:
-                    raise TypeMismatchInExpression(init)
-            elif typ == "AutoType":
-                typ = initValue
+                if typ == "IntegerType":
+                    if initValue != "IntegerType":
+                        raise TypeMismatchInExpression(init)
+                elif typ == "FloatType":
+                    if initValue != "IntegerType" and initValue != "FloatType":
+                        raise TypeMismatchInExpression(init)
+                elif typ == "BooleanType":
+                    if initValue != "BooleanType":
+                        raise TypeMismatchInExpression(init)
+                elif typ == "StringType":
+                    if initValue != "StringType":
+                        raise TypeMismatchInExpression(init)
+                elif typ == "ArrayType":
+                    tempArr = []
+                    for exp in initValue:
+                        ele = self.visit(exp, param)
+                        tempArr.append(ele)
+                    for i in range(len(tempArr) - 1):
+                        if tempArr[i] != tempArr[i + 1]:
+                            if tempArr[i] != array_typ: 
+                                raise IllegalArrayLiteral(initValue[i])
+                            elif tempArr[i + 1] != array_typ:
+                                raise IllegalArrayLiteral(initValue[i + 1])
+                    if tempArr[0] != array_typ:
+                        raise TypeMismatchInExpression(init)
+                elif typ == "AutoType":
+                    if initValue == "AutoType":
+                        raise TypeMismatchInExpression(init)
+                    param[-1].typ = initValue
         else:
             if typ == "AutoType":
                 raise Invalid(Variable(), name)
     
-    # TODO
     def visitParamDecl(self, ast, param):
         name = ast.name
         typ, array_typ, dim = self.visit(ast.typ, [])
@@ -274,7 +302,6 @@ class StaticChecker(Visitor):
         
         param += [ParameterDeclaration(name, typ, array_typ, dim, out, inherit)]
         
-    # TODO
     def visitFuncDecl(self, ast, param):
         name = ast.name
         rtn_typ, array_typ, dim = self.visit(ast.return_type, [])
