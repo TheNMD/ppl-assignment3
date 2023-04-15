@@ -259,16 +259,16 @@ class StaticChecker(Visitor):
             # TODO Xem lai TypeMismatchInVarDecl quang o dau
                 if typ == "IntegerType":
                     if initValue != "IntegerType":
-                        raise TypeMismatchInExpression(init)
+                        raise TypeMismatchInVarDecl(ast)
                 elif typ == "FloatType":
                     if initValue != "IntegerType" and initValue != "FloatType":
-                        raise TypeMismatchInExpression(init)
+                        raise TypeMismatchInVarDecl(ast)
                 elif typ == "BooleanType":
                     if initValue != "BooleanType":
-                        raise TypeMismatchInExpression(init)
+                        raise TypeMismatchInVarDecl(ast)
                 elif typ == "StringType":
                     if initValue != "StringType":
-                        raise TypeMismatchInExpression(init)
+                        raise TypeMismatchInVarDecl(ast)
                 elif typ == "ArrayType":
                     tempArr = []
                     for exp in initValue:
@@ -281,10 +281,10 @@ class StaticChecker(Visitor):
                             elif tempArr[i + 1] != array_typ:
                                 raise IllegalArrayLiteral(initValue[i + 1])
                     if tempArr[0] != array_typ:
-                        raise TypeMismatchInExpression(init)
+                        raise TypeMismatchInVarDecl(ast)
                 elif typ == "AutoType":
                     if initValue == "AutoType":
-                        raise TypeMismatchInExpression(init)
+                        raise TypeMismatchInVarDecl(ast)
                     param[-1].typ = initValue
         else:
             if typ == "AutoType":
@@ -363,8 +363,6 @@ class StaticChecker(Visitor):
             
             accessibleList += paraList
         
-        # TODO rtn_typ la auto
-        
         bodyList = []
         for ele in self.visit(body, []):
             self.visit(ele, bodyList)    
@@ -377,6 +375,12 @@ class StaticChecker(Visitor):
     def visitProgram(self, ast, param):
         for decl in ast.decls:
             self.visit(decl, param)
+        
+        # for ele in param:
+        #     if ele.name == "main" and ele.typ == "FunctionType":
+        #         break
+        # else:
+        #     raise NoEntryPoint()
         
         # for ele in param:
         #     print(f"Name: {ele.name}")

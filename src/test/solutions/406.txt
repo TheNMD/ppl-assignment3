@@ -1,1 +1,1 @@
-Type mismatch in expression: IntegerLit(22)
+Type mismatch in Variable Declaration: VarDecl(x, StringType, IntegerLit(22))

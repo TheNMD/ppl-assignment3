@@ -1,1 +1,1 @@
-Type mismatch in expression: BinExpr(||, BinExpr(||, BooleanLit(True), BooleanLit(False)), BooleanLit(True))
+Type mismatch in Variable Declaration: VarDecl(a, StringType, BinExpr(||, BinExpr(||, BooleanLit(True), BooleanLit(False)), BooleanLit(True)))
