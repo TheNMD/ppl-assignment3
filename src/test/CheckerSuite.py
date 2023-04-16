@@ -200,7 +200,7 @@ class CheckerSuite(unittest.TestCase):
         
     def test40(self):
         input = """ x : float ; a : array [1,2] of integer = {1, 2, x} ;"""
-        expect = "Illegal array literal: Id(x)"
+        expect = "Type mismatch in Variable Declaration: VarDecl(a, ArrayType([1, 2], IntegerType), ArrayLit([IntegerLit(1), IntegerLit(2), Id(x)]))"
         self.assertTrue(TestChecker.test(input, expect, 440))
         
     def test41(self):
@@ -215,7 +215,7 @@ class CheckerSuite(unittest.TestCase):
         
     def test43(self):
         input = """ a : array [1,2] of integer = {true, 1} ;"""
-        expect = "Illegal array literal: BooleanLit(True)"
+        expect = "Illegal array literal: IntegerLit(1)"
         self.assertTrue(TestChecker.test(input, expect, 443))
         
     def test44(self):
@@ -347,6 +347,11 @@ class CheckerSuite(unittest.TestCase):
         input = """ main : function auto (a : integer, b : float) {} x : integer = main(1 , 1) ; """
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 469))
+        
+    def test70(self):
+        input = """ arr : array [2, 3] of float = {{1, 2}, {2, 3}, {3, 4.5}} ; """
+        expect = "[]"
+        self.assertTrue(TestChecker.test(input, expect, 470))
         
     # def test62(self):
     #     input = """ main : function integer (a : integer, b : float) 

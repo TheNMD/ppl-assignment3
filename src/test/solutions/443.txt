@@ -1,1 +1,1 @@
-Illegal array literal: BooleanLit(True)
+Illegal array literal: IntegerLit(1)

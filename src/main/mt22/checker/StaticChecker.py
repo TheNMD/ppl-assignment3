@@ -184,7 +184,20 @@ class StaticChecker(Visitor):
         return "StringType"
     
     def visitArrayLit(self, ast, param):
-        return ast.explist
+        expList = ast.explist
+        tempArr = []
+        for exp in expList:
+            ele = self.visit(exp, param)
+            tempArr.append(ele)
+        for i in range(len(tempArr) - 1):
+            if tempArr[i] != tempArr[i + 1]:
+                if tempArr[i] == "IntegerType" and tempArr[i + 1] == "FloatType" or tempArr[i] == "FloatType" and tempArr[i + 1] == "IntegerType":
+                    continue
+                raise IllegalArrayLiteral(expList[i + 1])
+        for i in tempArr:
+            if i == "FloatType":
+                return "FloatType"
+        return tempArr[0]
 
     def visitFuncCall(self, ast, param):
         name = ast.name
@@ -256,7 +269,7 @@ class StaticChecker(Visitor):
                     if init.name == ele.name and ele.typ == "FunctionType":
                         ele.rtn_typ = initValue
             else:
-            # TODO Xem lai TypeMismatchInVarDecl quang o dau
+            # TODO Xem lai TypeMismatchInVarDecl raise o ast hay init
                 if typ == "IntegerType":
                     if initValue != "IntegerType":
                         raise TypeMismatchInVarDecl(ast)
@@ -270,17 +283,7 @@ class StaticChecker(Visitor):
                     if initValue != "StringType":
                         raise TypeMismatchInVarDecl(ast)
                 elif typ == "ArrayType":
-                    tempArr = []
-                    for exp in initValue:
-                        ele = self.visit(exp, param)
-                        tempArr.append(ele)
-                    for i in range(len(tempArr) - 1):
-                        if tempArr[i] != tempArr[i + 1]:
-                            if tempArr[i] != array_typ: 
-                                raise IllegalArrayLiteral(initValue[i])
-                            elif tempArr[i + 1] != array_typ:
-                                raise IllegalArrayLiteral(initValue[i + 1])
-                    if tempArr[0] != array_typ:
+                    if initValue != array_typ:
                         raise TypeMismatchInVarDecl(ast)
                 elif typ == "AutoType":
                     if initValue == "AutoType":
