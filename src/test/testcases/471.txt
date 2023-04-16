@@ -1,0 +1,5 @@
+ a, b, c : integer ; main : function integer (a : integer, b : float) 
+        {
+            c : integer ;
+            d : integer ;   
+        } 

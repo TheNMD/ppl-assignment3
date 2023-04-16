@@ -3,20 +3,22 @@ from Visitor import Visitor
 from StaticError import *
 
 class VariableDeclaration:
-    def __init__(self, name, typ, array_typ, dim):
+    def __init__(self, name, typ, array_typ, dim, accessibleList):
         self.name = name
         self.typ = typ
         self.array_typ = array_typ
         self.dim = dim
+        self.accessibleList = accessibleList
 
 class ParameterDeclaration:
-    def __init__(self, name, typ, array_typ, dim, out, inherit):
+    def __init__(self, name, typ, array_typ, dim, out, inherit, accessibleList):
         self.name = name
         self.typ = typ
         self.array_typ = array_typ
         self.dim = dim
         self.out = out
         self.inherit = inherit
+        self.accessibleList = accessibleList
         
 class FunctionDeclaration:
     def __init__(self, name, typ, rtn_typ, array_typ, dim, inherit, paraList, accessibleList):
@@ -211,7 +213,7 @@ class StaticChecker(Visitor):
                     raise TypeMismatchInExpression(ast)
                 for i in range(len(args)):
                     arg = self.visit(args[i], [])
-                    para = ele.paraList[i][1]
+                    para = ele.paraList[i].typ
                     if arg != para:
                         if para == "FloatType" and arg == "IntegerType":
                             continue
@@ -256,8 +258,13 @@ class StaticChecker(Visitor):
         for ele in param:
             if name == ele.name and ele.typ != "FunctionType":
                 raise Redeclared(Variable(), name)
-            
-        param += [VariableDeclaration(name, typ, array_typ, dim)]
+        
+        accessibleList = []
+        for ele in param:
+            accessibleList += [ele]
+
+        param += [VariableDeclaration(name, typ, array_typ, dim, accessibleList)]
+        
         
         if init:
             initValue = self.visit(ast.init, param)
@@ -292,6 +299,8 @@ class StaticChecker(Visitor):
         else:
             if typ == "AutoType":
                 raise Invalid(Variable(), name)
+            
+        return []
     
     def visitParamDecl(self, ast, param):
         name = ast.name
@@ -303,7 +312,11 @@ class StaticChecker(Visitor):
             if name == ele.name and ele.typ != "FunctionType":
                 raise Redeclared(Parameter(), name)
         
-        param += [ParameterDeclaration(name, typ, array_typ, dim, out, inherit)]
+        accessibleList = []
+        for ele in param:
+            accessibleList += [ele]
+
+        return [ParameterDeclaration(name, typ, array_typ, dim, out, inherit, accessibleList)]
         
     def visitFuncDecl(self, ast, param):
         name = ast.name
@@ -317,79 +330,52 @@ class StaticChecker(Visitor):
                 raise Redeclared(Function(), name)
         
         if inherit:
+        # TODO Xem lai keyword inherit o parameter
             for ele in param:
                 if inherit == ele.name and ele.typ == "FunctionType":
                     inheritList = ele.paraList
                     break
             else:
                 raise Undeclared(Function(), name)
-            tempList = []
-            if params:
-                for para in params:
-                    self.visit(para, tempList)
-            paraList = []
-            for i in tempList:
-                paraList += [[i.name, i.typ, i.inherit]]
-            for i in range(len(inheritList)):
-                for j in range(len(paraList)):
-                    if inheritList[i][0] == paraList[j][0]:
-                        # TODO Xem lai keyword inherit o parameter
-                        if paraList[j][2]:
-                            if inheritList[i][1] != paraList[j][1]:
-                                raise Invalid(Parameter(), paraList[j][0])
-                        else:
-                            raise Invalid(Parameter(), paraList[j][0])
-                        
-            accessibleList = []
-            for i in param:
-                if i.typ == "FunctionType":
-                    accessibleList += [[i.name, i.rtn_typ]]
-                else:
-                    accessibleList += [[i.name, i.typ]]
-            
-            accessibleList += inheritList + paraList
         else:
-            tempList = []
-            if params:
-                for para in params:
-                    self.visit(para, tempList)
-            paraList = []
-            for i in tempList:
-                paraList += [[i.name, i.typ]]
+            pass
         
-            accessibleList = []
-            for i in param:
-                if i.typ == "FunctionType":
-                    accessibleList += [[i.name, i.rtn_typ]]
-                else:
-                    accessibleList += [[i.name, i.typ]]
-            
-            accessibleList += paraList
+        paraList = []
+        if params:
+            for para in params:
+                paraList += self.visit(para, paraList)
+        
+        accessibleList = []
+        for ele in param:
+            accessibleList += [ele]
+        
+        accessibleList += paraList
         
         bodyList = []
+        bodyList += paraList
         for ele in self.visit(body, []):
-            self.visit(ele, bodyList)    
+            bodyList += self.visit(ele, bodyList)    
         
-        if len(bodyList) > 0:
-            print(bodyList[1].name)
+        # if len(bodyList) > 0:
+        #     print(bodyList[1].name)
         
-        param += [FunctionDeclaration(name, "FunctionType", rtn_typ, array_typ, dim, inherit, paraList, accessibleList)]
+        return [FunctionDeclaration(name, "FunctionType", rtn_typ, array_typ, dim, inherit, paraList, accessibleList)]
         
     def visitProgram(self, ast, param):
         for decl in ast.decls:
-            self.visit(decl, param)
-        
+            param += self.visit(decl, param)
+            
         # for ele in param:
         #     if ele.name == "main" and ele.typ == "FunctionType":
         #         break
         # else:
         #     raise NoEntryPoint()
         
-        # for ele in param:
-        #     print(f"Name: {ele.name}")
-        #     print(f"Type: {ele.typ}")
-        #     if ele.typ == "FunctionType":
-        #         print(f"Return type: {ele.rtn_typ}")
-        #         print(f"Parameter List: {ele.paraList}")
-        #         print(f"Accessible List: {ele.accessibleList}")
-        #     print("////////////////////////////////////////////////////")
+        for ele in param:
+            print(f"Name: {ele.name}")
+            print(f"Type: {ele.typ}")
+            print(f"Accessible List: {ele.accessibleList}")
+            if ele.typ == "FunctionType":
+                print(f"Return type: {ele.rtn_typ}")
+                print(f"Parameter List: {ele.paraList}")
+            print("////////////////////////////////////////////////////")
