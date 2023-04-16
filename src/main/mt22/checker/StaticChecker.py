@@ -67,7 +67,7 @@ class StaticChecker(Visitor):
         op = str(ast.op)
         left = ast.left
         right = ast.right
-
+        
         leftValue = self.visit(ast.left, param)
         rightValue = self.visit(ast.right, param)
         
@@ -151,6 +151,10 @@ class StaticChecker(Visitor):
     
     def visitId(self, ast, param):
         name = ast.name
+        
+        if type(param[-1]) == str:
+            param = param[:-1]
+        
         for ele in param:
             if name == ele.name and ele.typ != "FunctionType":
                 return ele.typ
@@ -195,7 +199,7 @@ class StaticChecker(Visitor):
             if tempArr[i] != tempArr[i + 1]:
                 if tempArr[i] == "IntegerType" and tempArr[i + 1] == "FloatType" or tempArr[i] == "FloatType" and tempArr[i + 1] == "IntegerType":
                     continue
-                raise IllegalArrayLiteral(expList[i + 1])
+                raise IllegalArrayLiteral(ast)
         for i in tempArr:
             if i == "FloatType":
                 return "FloatType"
@@ -209,15 +213,24 @@ class StaticChecker(Visitor):
                 if ele.rtn_typ == "VoidType":
                     raise TypeMismatchInExpression(ast)
                 # TODO Xem lai coi so arg khac so para thi loi gi
-                if len(args) != len(ele.paraList):
-                    raise TypeMismatchInExpression(ast)
-                for i in range(len(args)):
-                    arg = self.visit(args[i], [])
-                    para = ele.paraList[i].typ
-                    if arg != para:
-                        if para == "FloatType" and arg == "IntegerType":
-                            continue
-                        raise TypeMismatchInExpression(args[i])
+                if len(args) == len(ele.paraList):
+                    for i in range(len(args)):
+                        arg = self.visit(args[i], [])
+                        para = ele.paraList[i].typ
+                        if arg != para:
+                            if para == "FloatType" and arg == "IntegerType":
+                                continue
+                            raise TypeMismatchInExpression(args[i])
+                elif len(args) > len(ele.paraList):
+                    for i in range(len(ele.paraList)):
+                        arg = self.visit(args[i], [])
+                        para = ele.paraList[i].typ
+                        if arg != para:
+                            if para == "FloatType" and arg == "IntegerType":
+                                continue
+                            raise TypeMismatchInExpression(args[i])
+                    raise TypeMismatchInExpression(args[len(ele.paraList)])
+                elif len(args) < len(ele.paraList): pass
                 if ele.rtn_typ == "AutoType":
                     return "FAutoType"
                 return ele.rtn_typ
@@ -371,11 +384,11 @@ class StaticChecker(Visitor):
         # else:
         #     raise NoEntryPoint()
         
-        for ele in param:
-            print(f"Name: {ele.name}")
-            print(f"Type: {ele.typ}")
-            print(f"Accessible List: {ele.accessibleList}")
-            if ele.typ == "FunctionType":
-                print(f"Return type: {ele.rtn_typ}")
-                print(f"Parameter List: {ele.paraList}")
-            print("////////////////////////////////////////////////////")
+        # for ele in param:
+        #     print(f"Name: {ele.name}")
+        #     print(f"Type: {ele.typ}")
+        #     print(f"Accessible List: {ele.accessibleList}")
+        #     if ele.typ == "FunctionType":
+        #         print(f"Return type: {ele.rtn_typ}")
+        #         print(f"Parameter List: {ele.paraList}")
+        #     print("////////////////////////////////////////////////////")

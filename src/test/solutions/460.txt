@@ -1,1 +1,1 @@
-Type mismatch in expression: FloatLit(1.4)
+Type mismatch in expression: IntegerLit(2)
