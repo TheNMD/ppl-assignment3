@@ -3,12 +3,13 @@ from Visitor import Visitor
 from StaticError import *
 
 class VariableDeclaration:
-    def __init__(self, name, typ, array_typ, dim, accessibleList):
+    def __init__(self, name, typ, array_typ, dim, accessibleList, value):
         self.name = name
         self.typ = typ
         self.array_typ = array_typ
         self.dim = dim
         self.accessibleList = accessibleList
+        self.value = value
 
 class ParameterDeclaration:
     def __init__(self, name, typ, array_typ, dim, out, inherit, accessibleList):
@@ -30,26 +31,6 @@ class FunctionDeclaration:
         self.inherit = inherit
         self.paraList = paraList
         self.accessibleList = accessibleList
-
-def checkArrayLit(array_lit, dim, counter, array_typ, ast):
-    if counter == len(dim):
-        return False
-    if len(array_lit) == int(dim[counter]):
-        for i in array_lit:
-            if type(i) == str:
-                if array_typ == "FloatType":
-                    if i != "IntegerType" and i != "FloatType":
-                        return False
-                    return True
-                else:
-                    if i != array_typ:
-                        return False
-                    return True
-            else:
-                return checkArrayLit(i, dim, counter + 1, array_typ, ast)
-    else:
-        return False
-    
 class StaticChecker(Visitor):
     
     def __init__(self, ast):
@@ -187,12 +168,25 @@ class StaticChecker(Visitor):
         for ele in param:
             if name == ele.name and ele.typ != "FunctionType":
                 if ele.typ == "ArrayType":
-                    for idx in cell:
-                        if type(idx) != IntegerLit:
-                            raise TypeMismatchInExpression(idx)
-                    return ele.array_typ
+                    # TODO Xem lai coi so dim cua arraycell khac so dim cua array thi loi gi
+                    for i in range(len(cell)):
+                        if type(cell[i]) != IntegerLit:
+                            raise TypeMismatchInExpression(cell[i])
+                    if len(cell) == len(ele.dim):
+                        for i in range(len(cell)):
+                            if cell[i].val >= int(ele.dim[i]) or cell[i].val < 0:
+                                raise TypeMismatchInExpression(cell[i])
+
+                        res = ele.value[cell[0].val]
+                        for i in range(1, len(cell)):
+                            res = res[cell[i].val]
+                        return res
+                    elif len(cell) > len(ele.dim):
+                         raise TypeMismatchInExpression(cell[len(ele.dim)])
+                    elif len(cell) < len(ele.dim):
+                        raise TypeMismatchInExpression("")
                 else:
-                    raise TypeMismatchInExpression(name)
+                    raise TypeMismatchInExpression(Id(name))
         else:
             raise Undeclared(Identifier(), name)
     
@@ -210,20 +204,23 @@ class StaticChecker(Visitor):
     
     def visitArrayLit(self, ast, param):
         expList = ast.explist
-        tempArr = []
+        eleArr = []
         for exp in expList:
             ele = self.visit(exp, param)
-            tempArr.append(ele)
-        for i in range(len(tempArr) - 1):
-            if type(tempArr[i]) == str:
-                if tempArr[i] != tempArr[i + 1]:
-                    if tempArr[i] == "IntegerType" and tempArr[i + 1] == "FloatType" or tempArr[i] == "FloatType" and tempArr[i + 1] == "IntegerType":
-                        continue
-                    raise IllegalArrayLiteral(ast)
-            else:
-                if len(tempArr[i]) != len(tempArr[i + 1]):
+            eleArr.append(ele)
+        
+        for i in range(len(eleArr) - 1):
+            if type(eleArr[i]) == str and type(eleArr[i]) != str:
+                raise IllegalArrayLiteral(expList[i + 1])
+            elif type(eleArr[i]) != str and type(eleArr[i]) == str:
+                raise IllegalArrayLiteral(expList[i + 1])
+        
+        if type(eleArr[0]) != str:
+            for i in range(len(eleArr) - 1):
+                if len(eleArr[i]) != len(eleArr[i + 1]):
                     raise TypeMismatchInExpression(expList[i + 1]) 
-        return tempArr
+            
+        return eleArr
 
     def visitFuncCall(self, ast, param):
         name = ast.name
@@ -250,7 +247,8 @@ class StaticChecker(Visitor):
                                 continue
                             raise TypeMismatchInExpression(args[i])
                     raise TypeMismatchInExpression(args[len(ele.paraList)])
-                elif len(args) < len(ele.paraList): pass
+                elif len(args) < len(ele.paraList):
+                     raise TypeMismatchInExpression("")
                 if ele.rtn_typ == "AutoType":
                     return "FAutoType"
                 return ele.rtn_typ
@@ -284,6 +282,36 @@ class StaticChecker(Visitor):
     
     # Vardecl        
     def visitVarDecl(self, ast, param):
+        def checkArrayTyp(self, ast, param):
+            expList = ast.explist
+            eleArr = []
+            for exp in expList:
+                if type(exp) != ArrayLit:
+                    ele = self.visit(exp, param)
+                else:
+                    ele = checkArrayTyp(self, exp, param)
+                eleArr.append(ele)
+            for i in range(len(eleArr) - 1):
+                if eleArr[i] != eleArr[i + 1]:
+                    if eleArr[i] == "IntegerType" and eleArr[i + 1] == "FloatType" or eleArr[i] == "FloatType" and eleArr[i + 1] == "IntegerType":
+                        continue
+                    raise IllegalArrayLiteral(expList[i + 1])
+            for ele in eleArr:
+                if ele == "FloatType":
+                    return "FloatType"
+            return eleArr[0]
+        def checkArrayDim(array_lit, dim, counter, array_typ):
+            if counter == len(dim):
+                return False
+            if len(array_lit) == int(dim[counter]):
+                if type(array_lit[0]) == str:
+                    return True
+                else:
+                    return checkArrayDim(array_lit[0], dim, counter + 1, array_typ)
+            else:
+                return False
+    
+        
         name = ast.name
         typ, array_typ, dim = self.visit(ast.typ, [])
         init = ast.init
@@ -296,10 +324,10 @@ class StaticChecker(Visitor):
         for ele in param:
             accessibleList += [ele]
 
-        param += [VariableDeclaration(name, typ, array_typ, dim, accessibleList)]
+        param += [VariableDeclaration(name, typ, array_typ, dim, accessibleList, None)]
         
         if init:
-            initValue = self.visit(ast.init, param)
+            initValue = self.visit(init, param)
             if initValue == "AutoType":
                 raise TypeMismatchInExpression(init)
             elif initValue == "FAutoType":
@@ -322,13 +350,21 @@ class StaticChecker(Visitor):
                     if initValue != "StringType":
                         raise TypeMismatchInVarDecl(ast)
                 elif typ == "ArrayType":
-                    res = checkArrayLit(initValue, dim, 0, array_typ, ast)
-                    if res == False:
+                    dimRes = checkArrayDim(initValue, dim, 0, array_typ)
+                    typRes = checkArrayTyp(self, init, param)
+                    if dimRes == False:
                         raise TypeMismatchInVarDecl(ast)
+                    if typRes != array_typ:
+                        if array_typ == "FloatType": 
+                            if typRes != "IntegerType":
+                                raise TypeMismatchInVarDecl(ast)
+                        else:
+                            raise TypeMismatchInVarDecl(ast)
                 elif typ == "AutoType":
                     if initValue == "AutoType":
                         raise TypeMismatchInVarDecl(ast)
                     param[-1].typ = initValue
+            param[-1].value = initValue
         else:
             if typ == "AutoType":
                 raise Invalid(Variable(), name)

@@ -1,1 +1,1 @@
- x : auto = x + 1; 
+ main : function auto (a : integer, b : float) {} x : integer = main(1 , 1) + 1 ; 
