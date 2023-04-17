@@ -1,1 +1,1 @@
-Type mismatch in expression: 
+Type mismatch in Variable Declaration: VarDecl(b, IntegerType, ArrayCell(a, [IntegerLit(0)]))

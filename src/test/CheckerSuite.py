@@ -234,8 +234,8 @@ class CheckerSuite(unittest.TestCase):
         self.assertTrue(TestChecker.test(input, expect, 446))
         
     def test47(self):
-        input = """ a : array [1, 2] of integer ; b : integer = a[2] ;"""
-        expect = "Type mismatch in expression: "
+        input = """ a : array [2, 2] of integer = {{1, 2}, {3, 4}} ; b : integer = a[0] ;"""
+        expect = "Type mismatch in Variable Declaration: VarDecl(b, IntegerType, ArrayCell(a, [IntegerLit(0)]))"
         self.assertTrue(TestChecker.test(input, expect, 447))
         
     def test48(self):
@@ -387,4 +387,9 @@ class CheckerSuite(unittest.TestCase):
         input = """ a : array [3,2] of float = {{2, 3}, {3, 4}, {5, 6.6}} ; b : integer = a[2, 1] ;"""
         expect = "Type mismatch in Variable Declaration: VarDecl(b, IntegerType, ArrayCell(a, [IntegerLit(2), IntegerLit(1)]))"
         self.assertTrue(TestChecker.test(input, expect, 477))
+        
+    def test78(self):
+        input = """ a : array [3] of float = {1, 2, 6.6} ; b : float = a[2] ;"""
+        expect = "[]"
+        self.assertTrue(TestChecker.test(input, expect, 478))
                                                                                                             

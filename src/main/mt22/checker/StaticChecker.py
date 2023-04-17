@@ -172,7 +172,7 @@ class StaticChecker(Visitor):
                     for i in range(len(cell)):
                         if type(cell[i]) != IntegerLit:
                             raise TypeMismatchInExpression(cell[i])
-                    if len(cell) == len(ele.dim):
+                    if len(cell) <= len(ele.dim):
                         for i in range(len(cell)):
                             if cell[i].val >= int(ele.dim[i]) or cell[i].val < 0:
                                 raise TypeMismatchInExpression(cell[i])
@@ -183,8 +183,8 @@ class StaticChecker(Visitor):
                         return res
                     elif len(cell) > len(ele.dim):
                          raise TypeMismatchInExpression(cell[len(ele.dim)])
-                    elif len(cell) < len(ele.dim):
-                        raise TypeMismatchInExpression("")
+                    # elif len(cell) < len(ele.dim):
+                    #     raise TypeMismatchInExpression("")
                 else:
                     raise TypeMismatchInExpression(Id(name))
         else:
