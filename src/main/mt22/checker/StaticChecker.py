@@ -31,6 +31,25 @@ class FunctionDeclaration:
         self.paraList = paraList
         self.accessibleList = accessibleList
 
+def checkArrayLit(array_lit, dim, counter, array_typ, ast):
+    if counter == len(dim):
+        return False
+    if len(array_lit) == int(dim[counter]):
+        for i in array_lit:
+            if type(i) == str:
+                if array_typ == "FloatType":
+                    if i != "IntegerType" and i != "FloatType":
+                        return False
+                    return True
+                else:
+                    if i != array_typ:
+                        return False
+                    return True
+            else:
+                return checkArrayLit(i, dim, counter + 1, array_typ, ast)
+    else:
+        return False
+    
 class StaticChecker(Visitor):
     
     def __init__(self, ast):
@@ -196,14 +215,15 @@ class StaticChecker(Visitor):
             ele = self.visit(exp, param)
             tempArr.append(ele)
         for i in range(len(tempArr) - 1):
-            if tempArr[i] != tempArr[i + 1]:
-                if tempArr[i] == "IntegerType" and tempArr[i + 1] == "FloatType" or tempArr[i] == "FloatType" and tempArr[i + 1] == "IntegerType":
-                    continue
-                raise IllegalArrayLiteral(ast)
-        for i in tempArr:
-            if i == "FloatType":
-                return "FloatType"
-        return tempArr[0]
+            if type(tempArr[i]) == str:
+                if tempArr[i] != tempArr[i + 1]:
+                    if tempArr[i] == "IntegerType" and tempArr[i + 1] == "FloatType" or tempArr[i] == "FloatType" and tempArr[i + 1] == "IntegerType":
+                        continue
+                    raise IllegalArrayLiteral(ast)
+            else:
+                if len(tempArr[i]) != len(tempArr[i + 1]):
+                    raise TypeMismatchInExpression(expList[i + 1]) 
+        return tempArr
 
     def visitFuncCall(self, ast, param):
         name = ast.name
@@ -278,7 +298,6 @@ class StaticChecker(Visitor):
 
         param += [VariableDeclaration(name, typ, array_typ, dim, accessibleList)]
         
-        
         if init:
             initValue = self.visit(ast.init, param)
             if initValue == "AutoType":
@@ -303,7 +322,8 @@ class StaticChecker(Visitor):
                     if initValue != "StringType":
                         raise TypeMismatchInVarDecl(ast)
                 elif typ == "ArrayType":
-                    if initValue != array_typ:
+                    res = checkArrayLit(initValue, dim, 0, array_typ, ast)
+                    if res == False:
                         raise TypeMismatchInVarDecl(ast)
                 elif typ == "AutoType":
                     if initValue == "AutoType":
