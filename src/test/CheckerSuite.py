@@ -130,7 +130,7 @@ class CheckerSuite(unittest.TestCase):
         
     # def test26(self):
     #     input = """c, b : float ; a : boolean = c == b ;"""
-    #     expect = "Type mismatch in expression: Id(c)"
+    #     expect = "Type mismatch in expression: BinExpr(==, Id(c), Id(b))"
     #     self.assertTrue(TestChecker.test(input, expect, 426))
         
     # def test27(self):
@@ -140,7 +140,7 @@ class CheckerSuite(unittest.TestCase):
         
     # def test28(self):
     #     input = """ a : boolean = 2 != false ;"""
-    #     expect = "Type mismatch in expression: BooleanLit(False)"
+    #     expect = "Type mismatch in expression: BinExpr(!=, IntegerLit(2), BooleanLit(False))"
     #     self.assertTrue(TestChecker.test(input, expect, 428))
         
     # def test29(self):
@@ -285,12 +285,12 @@ class CheckerSuite(unittest.TestCase):
     
     # def test57(self):
     #     input = """ x : auto = x + {1, 2, 3}; """
-    #     expect = "Type mismatch in expression: Id(x)"
+    #     expect = "Type mismatch in expression: BinExpr(+, Id(x), ArrayLit([IntegerLit(1), IntegerLit(2), IntegerLit(3)]))"
     #     self.assertTrue(TestChecker.test(input, expect, 457))
         
     # def test58(self):
     #     input = """ x : auto = {1, 2, 3} + x ;"""
-    #     expect = "Type mismatch in expression: ArrayLit([IntegerLit(1), IntegerLit(2), IntegerLit(3)])"
+    #     expect = "Type mismatch in expression: BinExpr(+, ArrayLit([IntegerLit(1), IntegerLit(2), IntegerLit(3)]), Id(x))"
     #     self.assertTrue(TestChecker.test(input, expect, 458))
         
     # def test59(self):
@@ -343,10 +343,20 @@ class CheckerSuite(unittest.TestCase):
     #     expect = "[]"
     #     self.assertTrue(TestChecker.test(input, expect, 478))
     
-    def test69(self):
-        input = """ x, y, z : float ; main1 : function integer (a : integer, b : float) {} main2 : function integer (c : integer, d : float) {} main3 : function integer (e : integer, f : float) {} """
+    # def test69(self):
+    #     input = """ x, y, z : float ; main1 : function integer (a : integer, b : float) {} main2 : function integer (c : integer, d : float) {} main3 : function integer (e : integer, f : float) {} """
+    #     expect = "[]"
+    #     self.assertTrue(TestChecker.test(input, expect, 469))
+        
+    # def test70(self):
+    #     input = """  main : function void () {} """
+    #     expect = "[]"
+    #     self.assertTrue(TestChecker.test(input, expect, 470))
+        
+    def test71(self):
+        input = """  main : function void () {} main1 : function integer (a : integer, b : float) inherit main2 {} main2 : function integer (c : integer, d : float) {} """
         expect = "[]"
-        self.assertTrue(TestChecker.test(input, expect, 469))
+        self.assertTrue(TestChecker.test(input, expect, 471))
         
     # def test57(self):
     #     input = """ main : function integer (a : integer, b : float, a : string) {}"""

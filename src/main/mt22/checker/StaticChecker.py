@@ -65,8 +65,10 @@ class StaticChecker(Visitor):
                         ele.typ = BooleanType()
                     elif leftValue == "StringType":
                         ele.typ = StringType()
-
+        
         if op == "+" or op == "-" or op == "*" or op == "/":
+            if leftValue != "IntegerType" and leftValue != "FloatType" and rightValue != "IntegerType" and rightValue != "FloatType":
+                raise TypeMismatchInExpression(ast)
             if leftValue != "IntegerType" and leftValue != "FloatType":
                 raise TypeMismatchInExpression(left)
             if rightValue != "IntegerType" and rightValue != "FloatType":
@@ -76,33 +78,43 @@ class StaticChecker(Visitor):
             else:
                 res = "FloatType"
         elif op == "%":
+            if leftValue != "IntegerType" and rightValue != "IntegerType":
+                raise TypeMismatchInExpression(ast)
             if leftValue != "IntegerType":
                 raise TypeMismatchInExpression(left)
             if rightValue != "IntegerType":
                 raise TypeMismatchInExpression(right)
             res = "IntegerType"
         elif op == "&&" or op == "||":
+            if leftValue != "BooleanType" and rightValue != "BooleanType":
+                raise TypeMismatchInExpression(ast)
             if leftValue != "BooleanType":
                 raise TypeMismatchInExpression(left)
             if rightValue != "BooleanType":
                 raise TypeMismatchInExpression(right)
             res = "BooleanType"
         elif op == "==" or op == "!=":
+            if leftValue != "IntegerType" and leftValue != "BooleanType" and rightValue != "IntegerType" and rightValue != "BooleanType":
+                raise TypeMismatchInExpression(ast)
             if leftValue != "IntegerType" and leftValue != "BooleanType":
                 raise TypeMismatchInExpression(left)
             if rightValue != "IntegerType" and rightValue != "BooleanType":
                 raise TypeMismatchInExpression(right)
             # TODO Xem lai raise loi o left hay right
             if leftValue != rightValue:
-                 raise TypeMismatchInExpression(right)
+                 raise TypeMismatchInExpression(ast)
             res = "BooleanType"
         elif op == "<" or op == ">" or op == "<=" or op == ">=":
+            if leftValue != "IntegerType" and leftValue != "FloatType" and rightValue != "IntegerType" and rightValue != "FloatType":
+                raise TypeMismatchInExpression(ast)
             if leftValue != "IntegerType" and leftValue != "FloatType":
                 raise TypeMismatchInExpression(left)
             if rightValue != "IntegerType" and rightValue != "FloatType":
                 raise TypeMismatchInExpression(right)
             res = "BooleanType"
         elif op == "::":
+            if leftValue != "StringType" and rightValue != "StringType":
+                raise TypeMismatchInExpression(ast)
             if leftValue != "StringType":
                 raise TypeMismatchInExpression(left)
             if rightValue != "StringType":
@@ -362,6 +374,7 @@ class StaticChecker(Visitor):
         typ, array_typ, dim = self.visit(ast.typ, [])
         out = ast.out
         inherit = ast.inherit
+        
         param += [ast]
         
     def visitFuncDecl(self, ast, param):
@@ -375,25 +388,17 @@ class StaticChecker(Visitor):
         if params:
             for para in params:
                 self.visit(para, paraList)
-        
+                
         if inherit:
-        # TODO Xem lai keyword inherit o parameter
-            for ele in param:
-                if inherit == ele.name and ele.typ == "FunctionType":
-                    inheritList = ele.paraList
+            for ele in param[0]:
+                if inherit == ele.name:
+                    father = ele
                     break
             else:
                 raise Undeclared(Function(), name)
+            print(father)
         else:
             pass
-
-        bodyList = []
-        bodyList += paraList
-        for ele in self.visit(body, []):
-            bodyList += self.visit(ele, bodyList)    
-        
-        # if len(bodyList) > 0:
-        #     print(bodyList[1].name)
         
         param += [ast]
         
@@ -403,13 +408,20 @@ class StaticChecker(Visitor):
         for ele in ast.decls:
             if type(ele) == FuncDecl:
                 prototype += [ele]
-
+        
         param = [prototype]
-
+        
         # Loop 2
         for ele in ast.decls:
             self.visit(ele, param)
-            
+        
+        # for ele in prototype:
+        #     print(len(ele.params))
+        #     if ele.name == "main" and len(ele.params) == 0 and ele.return_type == VoidType():
+        #         break
+        # else:
+        #     raise NoEntryPoint()
+        
         # for ele in param:
         #     print(ele)
 

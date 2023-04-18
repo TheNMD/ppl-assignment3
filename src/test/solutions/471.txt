@@ -1,1 +1,1 @@
-Type mismatch in Variable Declaration: VarDecl(arr, ArrayType([3, 2], IntegerType), ArrayLit([ArrayLit([IntegerLit(1), IntegerLit(2)]), ArrayLit([IntegerLit(2), IntegerLit(3)]), ArrayLit([FloatLit(1.2), IntegerLit(1)])]))
+[]
