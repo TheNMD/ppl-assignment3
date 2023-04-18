@@ -65,8 +65,6 @@ class StaticChecker(Visitor):
                         ele.typ = BooleanType()
                     elif leftValue == "StringType":
                         ele.typ = StringType()
-        elif  leftValue == "AutoType" and rightValue == "AutoType":
-            return "AutoType"
 
         if op == "+" or op == "-" or op == "*" or op == "/":
             if leftValue != "IntegerType" and leftValue != "FloatType":
@@ -359,16 +357,11 @@ class StaticChecker(Visitor):
             if typ == "AutoType":
                 raise Invalid(Variable(), name)
     
-    def visitParamDecl(self, ast, param):
+    def visitParamDecl(self, ast, param):   
         name = ast.name
         typ, array_typ, dim = self.visit(ast.typ, [])
         out = ast.out
         inherit = ast.inherit
-        
-        accessibleList = []
-        for ele in param:
-            accessibleList += [ele]
-        
         param += [ast]
         
     def visitFuncDecl(self, ast, param):
@@ -377,6 +370,11 @@ class StaticChecker(Visitor):
         params = ast.params
         inherit = ast.inherit
         body = ast.body
+        
+        paraList = []
+        if params:
+            for para in params:
+                self.visit(para, paraList)
         
         if inherit:
         # TODO Xem lai keyword inherit o parameter
@@ -388,18 +386,7 @@ class StaticChecker(Visitor):
                 raise Undeclared(Function(), name)
         else:
             pass
-        
-        paraList = []
-        if params:
-            for para in params:
-                paraList += self.visit(para, paraList)
-        
-        accessibleList = []
-        for ele in param:
-            accessibleList += [ele]
-        
-        accessibleList += paraList
-        
+
         bodyList = []
         bodyList += paraList
         for ele in self.visit(body, []):
@@ -411,9 +398,15 @@ class StaticChecker(Visitor):
         param += [ast]
         
     def visitProgram(self, ast, param):
-        self.loop = 1
-        
-        self.loop = 2
+        # Loop 1
+        prototype = []
+        for ele in ast.decls:
+            if type(ele) == FuncDecl:
+                prototype += [ele]
+
+        param = [prototype]
+
+        # Loop 2
         for ele in ast.decls:
             self.visit(ele, param)
             

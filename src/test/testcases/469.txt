@@ -1,1 +1,1 @@
- arr : array [3, 2] of float = {{{1}, {2}}, {{2}, {3}}, {{3}, {3, 3}}} ; 
+ x, y, z : float ; main1 : function integer (a : integer, b : float) {} main2 : function integer (c : integer, d : float) {} main3 : function integer (e : integer, f : float) {} 
