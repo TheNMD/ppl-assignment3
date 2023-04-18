@@ -297,6 +297,12 @@ class StaticChecker(Visitor):
         typ, array_typ, dim = self.visit(ast.typ, [])
         init = ast.init
         
+        for ele in param:
+            if type(ele) == VarDecl and name == ele.name:
+                raise Redeclared(Variable(), name)
+        
+        param += [ast]
+        
         if init:
             initValue = self.visit(init, param)
             # TODO Xem lai TypeMismatchInVarDecl raise o ast hay init
@@ -363,6 +369,8 @@ class StaticChecker(Visitor):
         for ele in param:
             accessibleList += [ele]
         
+        param += [ast]
+        
     def visitFuncDecl(self, ast, param):
         name = ast.name
         rtn_typ, array_typ, dim = self.visit(ast.return_type, [])
@@ -400,21 +408,15 @@ class StaticChecker(Visitor):
         # if len(bodyList) > 0:
         #     print(bodyList[1].name)
         
+        param += [ast]
+        
     def visitProgram(self, ast, param):
-        for decl in ast.decls:
-            param += [decl]
-        for i in range(len(param)):
-            for j in range(i + 1, len(param)):
-                if param[i].name == param[j].name and type(param[i]) == type(param[j]):
-                    if type(param[j]) == VarDecl:
-                        raise Redeclared(Variable(), param[j].name)
-                    elif type(param[j]) == ParamDecl:
-                        raise Redeclared(Parameter(), param[j].name)
-                    elif type(param[j]) == FuncDecl:
-                        raise Redeclared(Function(), param[j].name)
-            
-        for ele in param:
+        self.loop = 1
+        
+        self.loop = 2
+        for ele in ast.decls:
             self.visit(ele, param)
             
         # for ele in param:
-        #     print(ele.typ)
+        #     print(ele)
+

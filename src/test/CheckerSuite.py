@@ -4,13 +4,13 @@ from AST import *
 
 class CheckerSuite(unittest.TestCase):
     def test1(self):
-        input = """x : integer = a ; y : integer ; """
-        expect = "Undeclared Identifier: a"
+        input = """x : integer ; y : integer ; """
+        expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 401))
         
     def test2(self):
         input = """x : integer = y ; y : integer = 2 ;"""
-        expect = "[]"
+        expect = "Undeclared Identifier: y"
         self.assertTrue(TestChecker.test(input, expect, 402))
 
     def test3(self):
