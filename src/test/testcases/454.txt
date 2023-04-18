@@ -1,1 +1,1 @@
- a : integer = 4 ; b : float = (a + 3) / 4 ; 
+ a, b : auto = a + 1.23, true || b ; 

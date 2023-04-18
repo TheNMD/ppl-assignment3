@@ -1,1 +1,1 @@
-Type mismatch in Variable Declaration: VarDecl(b, StringType, UnExpr(!, BinExpr(>=, BinExpr(/, BinExpr(+, Id(a), IntegerLit(3)), IntegerLit(4)), IntegerLit(8))))
+[]

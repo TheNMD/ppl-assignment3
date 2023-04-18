@@ -1,1 +1,1 @@
-[]
+Type mismatch in expression: ArrayLit([IntegerLit(3), IntegerLit(3), IntegerLit(4)])

@@ -1,1 +1,1 @@
- main : function integer (a : integer, b : float) {} x : integer = main(1 , 1) ;
+ arr : array [3, 2] of integer = {{1, 2}, {2, 3}, {1.2, 1}} ; 

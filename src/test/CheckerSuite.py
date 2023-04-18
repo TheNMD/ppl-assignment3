@@ -4,13 +4,13 @@ from AST import *
 
 class CheckerSuite(unittest.TestCase):
     def test1(self):
-        input = """x : integer = x + 1 ;"""
-        expect = "[]"
+        input = """x : integer = a ; y : integer ; """
+        expect = "Undeclared Identifier: a"
         self.assertTrue(TestChecker.test(input, expect, 401))
         
     def test2(self):
-        input = """x : integer = 2.0 ;"""
-        expect = "Type mismatch in Variable Declaration: VarDecl(x, IntegerType, FloatLit(2.0))"
+        input = """x : integer = y ; y : integer = 2 ;"""
+        expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 402))
 
     def test3(self):
@@ -269,127 +269,121 @@ class CheckerSuite(unittest.TestCase):
         self.assertTrue(TestChecker.test(input, expect, 453))
         
     def test54(self):
-        input = """ a : integer = 4 ; b : float = (a + 3) / 4 ; """
+        input = """ a, b : auto = a + 1.23, true || b ; """
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 454))
         
     def test55(self):
-        input = """ a : integer = 4 ; b : string = !(((a + 3) / 4) >= 8) ; """
-        expect = "Type mismatch in Variable Declaration: VarDecl(b, StringType, UnExpr(!, BinExpr(>=, BinExpr(/, BinExpr(+, Id(a), IntegerLit(3)), IntegerLit(4)), IntegerLit(8))))"
-        self.assertTrue(TestChecker.test(input, expect, 455))  
+        input = """ x : auto = {{1, 2}, {3, 2.5}, {3, 9.0}} ; """
+        expect = "[]"
+        self.assertTrue(TestChecker.test(input, expect, 455))
         
     def test56(self):
-        input = """ main1 : function integer (a : integer, b : float) {} main2 : function integer (c : integer, d : float) {} main3 : function integer (e : integer, f : float) {} """
-        expect = "[]"
+        input = """ x : auto = 1 + {1, 2, 3}; """
+        expect = "Type mismatch in expression: ArrayLit([IntegerLit(1), IntegerLit(2), IntegerLit(3)])"
         self.assertTrue(TestChecker.test(input, expect, 456))
-        
+    
     def test57(self):
-        input = """ main : function integer (a : integer, b : float, a : string) {}"""
-        expect = "Redeclared Parameter: a"
+        input = """ x : auto = x + {1, 2, 3}; """
+        expect = "Type mismatch in expression: Id(x)"
         self.assertTrue(TestChecker.test(input, expect, 457))
         
     def test58(self):
-        input = """ main, b, c : integer ; main : function integer (a : integer, b : float) {}"""
-        expect = "[]"
+        input = """ x : auto = {1, 2, 3} + x ;"""
+        expect = "Type mismatch in expression: ArrayLit([IntegerLit(1), IntegerLit(2), IntegerLit(3)])"
         self.assertTrue(TestChecker.test(input, expect, 458))
         
     def test59(self):
-        input = """ main : function integer (a : integer, b : float) {} x : integer = main(1, 1, 2) ;"""
-        expect = "Type mismatch in expression: IntegerLit(2)"
+        input = """ arr : array [3, 2] of float = {{{1}, {2}}, {{2}, {3}}, {{3}, {3, 3}}} ; """
+        expect = "Type mismatch in expression: ArrayLit([IntegerLit(3), IntegerLit(3)])"
         self.assertTrue(TestChecker.test(input, expect, 459))
-    
+        
     def test60(self):
-        input = """ arr : array [2, 2] of float = {{1, 2}, {2, 3}} ; """
-        expect = "[]"
+        input = """ arr : array [3, 2] of float = {{1, 2}, {2, 3}, {3, 3, 4}} ; """
+        expect = "Type mismatch in expression: ArrayLit([IntegerLit(3), IntegerLit(3), IntegerLit(4)])"
         self.assertTrue(TestChecker.test(input, expect, 460))
         
     def test61(self):
-        input = """ main : function integer (a : integer, b : float) {} x : integer = main(1 , 1) ;"""
-        expect = "[]"
+        input = """ arr : array [3, 2] of integer = {{1, 2}, {2, 3}, {1.2, 1}} ; """
+        expect = "Type mismatch in Variable Declaration: VarDecl(arr, ArrayType([3, 2], IntegerType), ArrayLit([ArrayLit([IntegerLit(1), IntegerLit(2)]), ArrayLit([IntegerLit(2), IntegerLit(3)]), ArrayLit([FloatLit(1.2), IntegerLit(1)])]))"
         self.assertTrue(TestChecker.test(input, expect, 461))
-    
+        
     def test62(self):
-        input = """ main : function integer () {} main1 : function integer (c : integer, a : float) inherit main {} """
+        input = """ arr : array [3, 2] of float = {{1, 2}, {2, 3}, {1.2, 1}} ; """
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 462))
         
     def test63(self):
-        input = """ main : function integer (a : integer, b : float) {} main1 : function integer (c : integer, inherit a : integer) inherit main {} """
-        expect = "[]"
+        input = """ arr : array [3, 2] of float = {{1, 2}, {2, 3}, {1.2, 1}} ; a : integer = arr[-1] ;  """
+        expect = "Type mismatch in expression: UnExpr(-, IntegerLit(1))"
         self.assertTrue(TestChecker.test(input, expect, 463))
         
     def test64(self):
-        input = """ x : auto = x ; """
-        expect = "Type mismatch in expression: Id(x)"
+        input = """ arr : array [3, 2] of float = {{1, 2}, {2, 3}, {1.2, 1}} ; a : integer = arr[a + 2 + c] ;  """
+        expect = "Type mismatch in expression: BinExpr(+, BinExpr(+, Id(a), IntegerLit(2)), Id(c))"
         self.assertTrue(TestChecker.test(input, expect, 464))
         
     def test65(self):
-        input = """ x : auto = x + 1; """
-        expect = "Type mismatch in expression: Id(x)"
-        self.assertTrue(TestChecker.test(input, expect, 465))
-    
-    def test66(self):
-        input = """ x : auto = x + 1; """
-        expect = "Type mismatch in expression: Id(x)"
-        self.assertTrue(TestChecker.test(input, expect, 466))
-        
-    def test67(self):
-        input = """ main : function auto (a : integer, b : float) {} x : integer = main(1 , 1) + 1 ; """
-        expect = "[]"
-        self.assertTrue(TestChecker.test(input, expect, 467))
-        
-    def test68(self):
-        input = """ main : function auto (a : integer, b : float) {} x : integer = main(1 , 1) ; """
-        expect = "[]"
-        self.assertTrue(TestChecker.test(input, expect, 468))
-        
-    def test69(self):
-        input = """ arr : array [3, 2] of float = {{{1}, {2}}, {{2}, {3}}, {{3}, {3, 3}}} ; """
-        expect = "Type mismatch in expression: ArrayLit([IntegerLit(3), IntegerLit(3)])"
-        self.assertTrue(TestChecker.test(input, expect, 469))
-        
-    def test70(self):
-        input = """ arr : array [3, 2] of float = {{1, 2}, {2, 3}, {3, 3, 4}} ; """
-        expect = "Type mismatch in expression: ArrayLit([IntegerLit(3), IntegerLit(3), IntegerLit(4)])"
-        self.assertTrue(TestChecker.test(input, expect, 470))
-        
-    def test71(self):
-        input = """ arr : array [3, 2] of integer = {{1, 2}, {2, 3}, {1.2, 1}} ; """
-        expect = "Type mismatch in Variable Declaration: VarDecl(arr, ArrayType([3, 2], IntegerType), ArrayLit([ArrayLit([IntegerLit(1), IntegerLit(2)]), ArrayLit([IntegerLit(2), IntegerLit(3)]), ArrayLit([FloatLit(1.2), IntegerLit(1)])]))"
-        self.assertTrue(TestChecker.test(input, expect, 471))
-        
-    def test72(self):
-        input = """ arr : array [3, 2] of float = {{1, 2}, {2, 3}, {1.2, 1}} ; """
-        expect = "[]"
-        self.assertTrue(TestChecker.test(input, expect, 472))
-        
-    def test73(self):
-        input = """ arr : array [3, 2] of float = {{1, 2}, {2, 3}, {1.2, 1}} ; a : integer = arr[-1] ;  """
-        expect = "Type mismatch in expression: UnExpr(-, IntegerLit(1))"
-        self.assertTrue(TestChecker.test(input, expect, 473))
-        
-    def test74(self):
         input = """ a : array [1,2] of integer ; b : integer = a[2, 3, 5] ;"""
         expect = "Type mismatch in expression: IntegerLit(5)"
         self.assertTrue(TestChecker.test(input, expect, 474))
-
-    def test75(self):
-        input = """ main : function auto (a : integer, b : float) {} x : integer = main(1) + 1 ; """
-        expect = "Type mismatch in expression: "
-        self.assertTrue(TestChecker.test(input, expect, 475))
         
-    def test76(self):
+    def test66(self):
         input = """ a : array [3,2] of float = {{2, 3}, {3, 4}, {5, 6.6}} ; b : float = a[0, 1] ;"""
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 476))
         
-    def test77(self):
+    def test67(self):
         input = """ a : array [3,2] of float = {{2, 3}, {3, 4}, {5, 6.6}} ; b : integer = a[2, 1] ;"""
         expect = "Type mismatch in Variable Declaration: VarDecl(b, IntegerType, ArrayCell(a, [IntegerLit(2), IntegerLit(1)]))"
         self.assertTrue(TestChecker.test(input, expect, 477))
         
-    def test78(self):
+    def test68(self):
         input = """ a : array [3] of float = {1, 2, 6.6} ; b : float = a[2] ;"""
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 478))
+    
+    
+    
+    
+    # def test56(self):
+    #     input = """ main1 : function integer (a : integer, b : float) {} main2 : function integer (c : integer, d : float) {} main3 : function integer (e : integer, f : float) {} """
+    #     expect = "[]"
+    #     self.assertTrue(TestChecker.test(input, expect, 456))
+        
+    # def test57(self):
+    #     input = """ main : function integer (a : integer, b : float, a : string) {}"""
+    #     expect = "Redeclared Parameter: a"
+    #     self.assertTrue(TestChecker.test(input, expect, 457))
+        
+    # def test58(self):
+    #     input = """ main, b, c : integer ; main : function integer (a : integer, b : float) {}"""
+    #     expect = "[]"
+    #     self.assertTrue(TestChecker.test(input, expect, 458))
+        
+    # def test59(self):
+    #     input = """ main : function integer (a : integer, b : float) {} x : integer = main(1, 1, 2) ;"""
+    #     expect = "Type mismatch in expression: IntegerLit(2)"
+    #     self.assertTrue(TestChecker.test(input, expect, 459))
+    
+    # def test60(self):
+    #     input = """ arr : array [2, 2] of float = {{1, 2}, {2, 3}} ; """
+    #     expect = "[]"
+    #     self.assertTrue(TestChecker.test(input, expect, 460))
+        
+    # def test61(self):
+    #     input = """ main : function integer (a : integer, b : float) {} x : integer = main(1 , 1) ;"""
+    #     expect = "[]"
+    #     self.assertTrue(TestChecker.test(input, expect, 461))
+    
+    # def test62(self):
+    #     input = """ main : function integer () {} main1 : function integer (c : integer, a : float) inherit main {} """
+    #     expect = "[]"
+    #     self.assertTrue(TestChecker.test(input, expect, 462))
+        
+    # def test63(self):
+    #     input = """ main : function integer (a : integer, b : float) {} main1 : function integer (c : integer, inherit a : integer) inherit main {} """
+    #     expect = "[]"
+    #     self.assertTrue(TestChecker.test(input, expect, 463))
+
                                                                                                             

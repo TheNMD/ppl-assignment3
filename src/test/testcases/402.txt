@@ -1,1 +1,1 @@
-x : integer = 2.0 ;
+x : integer = y ; y : integer = 2 ;
