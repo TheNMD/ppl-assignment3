@@ -1,1 +1,1 @@
-Type mismatch in expression: BinExpr(-, IntegerLit(1), IntegerLit(1))
+Type mismatch in expression: FloatLit(5.9)

@@ -1,1 +1,7 @@
- arr : array [3, 2] of float = {{1, 2}, {2, 3}, {1.2, 1}} ; 
+
+        a : array [2, 2] of float = {{1, 2}, {3, 4.4}} ;  
+        func : function integer (a : auto, b : auto) {
+            a = {2, 3} ;
+            c : float ;
+            return ;
+        } 

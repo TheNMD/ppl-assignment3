@@ -1,1 +1,8 @@
-  main : function void () {} main1 : function integer (a : integer, b : float) inherit main2 {} main2 : function integer (c : integer, d : float) {} 
+
+        a : array [2, 2] of float = {{1, 2}, {3, 4.4}} ;  
+        func : function integer (a : integer, b : float) {
+            a = 2 ;
+            c : float ;
+            c = a[1, 0] ;
+            return ;
+        } 

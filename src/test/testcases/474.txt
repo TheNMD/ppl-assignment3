@@ -1,1 +1,13 @@
- a : array [1,2] of integer ; b : integer = a[2, 3, 5] ;
+
+        u : float ;
+        x : array [2, 2] of float = {{1, 2}, {3, 4.4}} ;  
+        func : function auto (a : auto, b : string) {
+            c : float ;
+            return ;
+        }
+        funcx : function auto (a : auto, b : auto) { return ; }
+        func1 : function auto (c : string, d : float) {
+            c = func("2", funcx(4, 4.5)) ;
+            return ;
+        }
+        

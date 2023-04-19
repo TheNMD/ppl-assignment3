@@ -1,1 +1,7 @@
-  main : function void () {} 
+  
+        a : array [2, 2] of float = {{2, 3.6}, {5, 9.9}} ;
+        main : function void () {
+            x : integer = a[0, 0] ;
+            y : float = a[1, 1] ;
+            return ;
+        } 
