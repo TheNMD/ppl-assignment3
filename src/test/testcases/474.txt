@@ -1,13 +1,8 @@
 
-        u : float ;
-        x : array [2, 2] of float = {{1, 2}, {3, 4.4}} ;  
+        x : array [2, 2] of float = {{1.0, 2.0}, {3.0, 4.4}} ;  
+        b : float = x[0, 0] ;
         func : function auto (a : auto, b : string) {
             c : float ;
             return ;
-        }
-        funcx : function auto (a : auto, b : auto) { return ; }
-        func1 : function auto (c : string, d : float) {
-            c = func("2", funcx(4, 4.5)) ;
-            return ;
-        }
+            }
         

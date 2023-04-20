@@ -1,1 +1,1 @@
- arr : array [3, 2] of float = {{1, 2}, {2, 3}, {1.2, 1}} ; a : integer = arr[-1] ;  
+ arr : array [3, 2] of float = {{1.0, 2.0}, {2.0, 3.0}, {1.2, 1.0}} ; a : integer = arr[-1] ;  

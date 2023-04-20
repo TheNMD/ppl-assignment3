@@ -1,5 +1,5 @@
 
-        a : array [2, 2] of float = {{1, 2}, {3, 4.4}} ;  
+        a : array [2, 2] of float = {{1.0, 2.0}, {3.0, 4.4}} ;  
         func : function integer (a : integer, b : float) {
             a = 2 ;
             c : float ;

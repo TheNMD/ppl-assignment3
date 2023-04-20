@@ -4,22 +4,22 @@ from StaticError import *
 
 def checkArrayTyp(self, ast, param):
     expList = ast.explist
-    eleArr = []
+    typArr = []
     for exp in expList:
         if type(exp) != ArrayLit:
             ele = self.visit(exp, param)
         else:
             ele = checkArrayTyp(self, exp, param)
-        eleArr.append(ele)
-    for i in range(len(eleArr) - 1):
-        if eleArr[i] != eleArr[i + 1]:
-            if eleArr[i] == "IntegerType" and eleArr[i + 1] == "FloatType" or eleArr[i] == "FloatType" and eleArr[i + 1] == "IntegerType":
-                continue
+        typArr.append(ele)
+    for i in range(len(typArr) - 1):
+        if typArr[i] != typArr[i + 1]:
+            # if typArr[i] == "IntegerType" and typArr[i + 1] == "FloatType" or typArr[i] == "FloatType" and typArr[i + 1] == "IntegerType":
+            #     continue
             raise IllegalArrayLiteral(expList[i + 1])
-    for ele in eleArr:
-        if ele == "FloatType":
-            return "FloatType"
-    return eleArr[0]
+    # for ele in typArr:
+    #     if ele == "FloatType":
+    #         return "FloatType"
+    return typArr[0]
     
 def checkArrayDim(array_lit, dim, counter):
     if counter == len(dim):
@@ -209,7 +209,6 @@ class StaticChecker(Visitor):
         for ele in param:
             if (type(ele) == VarDecl or type(ele) == ParamDecl) and name == ele.name:
                 if type(ele.typ) == ArrayType:
-                    # TODO Xem lai coi so dim cua arraycell khac so dim cua array thi loi gi
                     for i in range(len(cell)):
                         if type(cell[i]) != IntegerLit:
                             raise TypeMismatchInExpression(cell[i])
@@ -218,11 +217,13 @@ class StaticChecker(Visitor):
                         for i in range(len(cell)):
                             if cell[i].val >= int(ele.typ.dimensions[i]) or cell[i].val < 0:
                                 raise TypeMismatchInExpression(cell[i])
+                        
                         eleList = self.visit(ele.init, param)
-                        res = eleList[cell[0].val]
+                        typ = eleList[cell[0].val]
                         for i in range(1, len(cell)):
-                            res = res[cell[i].val]
-                        return res
+                            typ = typ[cell[i].val]
+                        
+                        return typ
                     
                     elif len(cell) > len(ele.typ.dimensions):
                          raise TypeMismatchInExpression(cell[len(ele.typ.dimensions)])
@@ -246,23 +247,23 @@ class StaticChecker(Visitor):
     
     def visitArrayLit(self, ast, param):
         expList = ast.explist
-        eleArr = []
+        typArr = []
         for exp in expList:
-            ele = self.visit(exp, param)
-            eleArr.append(ele)
+            typ = self.visit(exp, param)
+            typArr.append(typ)
         
-        for i in range(len(eleArr) - 1):
-            if type(eleArr[i]) == str and type(eleArr[i]) != str:
+        for i in range(len(typArr) - 1):
+            if type(typArr[i]) == str and type(typArr[i]) != str:
                 raise IllegalArrayLiteral(expList[i + 1])
-            elif type(eleArr[i]) != str and type(eleArr[i]) == str:
+            elif type(typArr[i]) != str and type(typArr[i]) == str:
                 raise IllegalArrayLiteral(expList[i + 1])
         
-        if type(eleArr[0]) != str:
-            for i in range(len(eleArr) - 1):
-                if len(eleArr[i]) != len(eleArr[i + 1]):
+        if type(typArr[0]) != str:
+            for i in range(len(typArr) - 1):
+                if len(typArr[i]) != len(typArr[i + 1]):
                     raise TypeMismatchInExpression(expList[i + 1]) 
             
-        return eleArr
+        return typArr
 
     def visitFuncCall(self, ast, param):
         name = ast.name

@@ -190,7 +190,7 @@ class CheckerSuite(unittest.TestCase):
         
     def test40(self):
         input = """ x : float ; a : array [1,2] of integer = {1, 2, x} ;"""
-        expect = "Type mismatch in Variable Declaration: VarDecl(a, ArrayType([1, 2], IntegerType), ArrayLit([IntegerLit(1), IntegerLit(2), Id(x)]))"
+        expect = "Illegal array literal: Id(x)"
         self.assertTrue(TestChecker.test(input, expect, 440))
         
     def test41(self):
@@ -259,7 +259,7 @@ class CheckerSuite(unittest.TestCase):
         self.assertTrue(TestChecker.test(input, expect, 453))
         
     def test55(self):
-        input = """ x : auto = {{1, 2}, {3, 2.5}, {3, 9.0}} ; """
+        input = """ x : auto = {{1.0, 2.2}, {3.9, 2.5}, {3.7, 9.0}} ; """
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 455))
         
@@ -269,32 +269,32 @@ class CheckerSuite(unittest.TestCase):
         self.assertTrue(TestChecker.test(input, expect, 456))
         
     def test59(self):
-        input = """ arr : array [3, 2] of float = {{{1}, {2}}, {{2}, {3}}, {{3}, {3, 3}}} ; """
+        input = """ arr : array [3, 2] of integer = {{{1}, {2}}, {{2}, {3}}, {{3}, {3, 3}}} ; """
         expect = "Type mismatch in expression: ArrayLit([IntegerLit(3), IntegerLit(3)])"
         self.assertTrue(TestChecker.test(input, expect, 459))
         
     def test60(self):
-        input = """ arr : array [3, 2] of float = {{1, 2}, {2, 3}, {3, 3, 4}} ; """
+        input = """ arr : array [3, 2] of integer = {{1, 2}, {2, 3}, {3, 3, 4}} ; """
         expect = "Type mismatch in expression: ArrayLit([IntegerLit(3), IntegerLit(3), IntegerLit(4)])"
         self.assertTrue(TestChecker.test(input, expect, 460))
         
     def test61(self):
         input = """ arr : array [3, 2] of integer = {{1, 2}, {2, 3}, {1.2, 1}} ; """
-        expect = "Type mismatch in Variable Declaration: VarDecl(arr, ArrayType([3, 2], IntegerType), ArrayLit([ArrayLit([IntegerLit(1), IntegerLit(2)]), ArrayLit([IntegerLit(2), IntegerLit(3)]), ArrayLit([FloatLit(1.2), IntegerLit(1)])]))"
+        expect = "Illegal array literal: IntegerLit(1)"
         self.assertTrue(TestChecker.test(input, expect, 461))
         
     def test62(self):
-        input = """ arr : array [3, 2] of float = {{1, 2}, {2, 3}, {1.2, 1}} ; """
+        input = """ arr : array [3, 2] of float = {{1.0, 2.0}, {2.0, 3.0}, {1.2, 1.0}} ; """
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 462))
         
     def test63(self):
-        input = """ arr : array [3, 2] of float = {{1, 2}, {2, 3}, {1.2, 1}} ; a : integer = arr[-1] ;  """
+        input = """ arr : array [3, 2] of float = {{1.0, 2.0}, {2.0, 3.0}, {1.2, 1.0}} ; a : integer = arr[-1] ;  """
         expect = "Type mismatch in expression: UnExpr(-, IntegerLit(1))"
         self.assertTrue(TestChecker.test(input, expect, 463))
         
     def test64(self):
-        input = """ arr : array [3, 2] of float = {{1, 2}, {2, 3}, {1.2, 1}} ; a : integer = arr[a + 2 + c] ;  """
+        input = """ arr : array [3, 2] of float = {{1.0, 2.0}, {2.0, 3.0}, {1.2, 1.0}} ; a : integer = arr[a + 2 + c] ;  """
         expect = "Type mismatch in expression: BinExpr(+, BinExpr(+, Id(a), IntegerLit(2)), Id(c))"
         self.assertTrue(TestChecker.test(input, expect, 464))
         
@@ -304,17 +304,17 @@ class CheckerSuite(unittest.TestCase):
         self.assertTrue(TestChecker.test(input, expect, 474))
         
     def test66(self):
-        input = """ a : array [3,2] of float = {{2, 3}, {3, 4}, {5, 6.6}} ; b : float = a[0, 1] ;"""
+        input = """ a : array [3,2] of float = {{2.0, 3.0}, {3.0, 4.0}, {5.0, 6.6}} ; b : float = a[0, 1] ;"""
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 476))
         
     def test67(self):
-        input = """ a : array [3,2] of float = {{2, 3}, {3, 4}, {5, 6.6}} ; b : integer = a[2, 1] ;"""
+        input = """ a : array [3,2] of float = {{2.0, 3.0}, {3.0, 4.0}, {5.0, 6.6}} ; b : integer = a[2, 1] ;"""
         expect = "Type mismatch in Variable Declaration: VarDecl(b, IntegerType, ArrayCell(a, [IntegerLit(2), IntegerLit(1)]))"
         self.assertTrue(TestChecker.test(input, expect, 477))
         
     def test68(self):
-        input = """ a : array [3] of float = {1, 2, 6.6} ; b : float = a[2] ;"""
+        input = """ a : array [3] of float = {1.0, 2.0, 6.6} ; b : float = a[2] ;"""
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 478))
     
@@ -325,9 +325,9 @@ class CheckerSuite(unittest.TestCase):
         
     def test70(self):
         input = """  
-        a : array [2, 2] of float = {{2, 3.6}, {5, 9.9}} ;
+        a : array [2, 2] of float = {{2.0, 3.6}, {5.0, 9.9}} ;
         main : function void () {
-            x : integer = a[0, 0] ;
+            x : float = a[0, 0] ;
             y : float = a[1, 1] ;
             return ;
         } """
@@ -336,7 +336,7 @@ class CheckerSuite(unittest.TestCase):
         
     def test71(self):
         input = """
-        a : array [2, 2] of float = {{1, 2}, {3, 4.4}} ;  
+        a : array [2, 2] of float = {{1.0, 2.0}, {3.0, 4.4}} ;  
         func : function integer (a : integer, b : float) {
             a = 2 ;
             c : float ;
@@ -348,7 +348,7 @@ class CheckerSuite(unittest.TestCase):
         
     def test72(self):
         input = """
-        a : array [2, 2] of float = {{1, 2}, {3, 4.4}} ;  
+        a : array [2, 2] of float = {{1.0, 2.0}, {3.0, 4.4}} ;  
         func : function integer (a : auto, b : auto) {
             a = {2, 3} ;
             c : float ;
@@ -373,17 +373,12 @@ class CheckerSuite(unittest.TestCase):
         
     def test74(self):
         input = """
-        u : float ;
-        x : array [2, 2] of float = {{1, 2}, {3, 4.4}} ;  
+        x : array [2, 2] of float = {{1.0, 2.0}, {3.0, 4.4}} ;  
+        b : float = x[0, 0] ;
         func : function auto (a : auto, b : string) {
             c : float ;
             return ;
-        }
-        funcx : function auto (a : auto, b : auto) { return ; }
-        func1 : function auto (c : string, d : float) {
-            c = func("2", funcx(4, 4.5)) ;
-            return ;
-        }
+            }
         """
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 474))
@@ -409,7 +404,7 @@ class CheckerSuite(unittest.TestCase):
     #     self.assertTrue(TestChecker.test(input, expect, 459))
     
     # def test60(self):
-    #     input = """ arr : array [2, 2] of float = {{1, 2}, {2, 3}} ; """
+    #     input = """ arr : array [2, 2] of float = {{1.0, 2.0}, {2.0, 3.0}} ; """
     #     expect = "[]"
     #     self.assertTrue(TestChecker.test(input, expect, 460))
         
