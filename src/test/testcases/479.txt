@@ -1,1 +1,6 @@
- a : array [2] of integer = {{1}, {2}} ;
+
+        func : function float (a : integer, b : integer) {
+                func1(1, 2) ;
+            }
+        func1 : function auto (x : auto, y : auto) {}
+        

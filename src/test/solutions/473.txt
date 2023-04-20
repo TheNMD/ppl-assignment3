@@ -1,1 +1,1 @@
-Type mismatch in expression: FloatLit(5.9)
+Type mismatch in statement: ReturnStmt()

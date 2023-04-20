@@ -1,1 +1,8 @@
- a : array [3,2] of float = {{2.0, 3.0}, {3.0, 4.0}, {5.0, 6.6}} ; b : float = a[0, 1] ;
+
+        func : function integer (a : integer, b : integer) {
+            a = 2 ;
+            b = 5 ;
+            if (a > b) break ;
+            else continue ;
+            }
+        

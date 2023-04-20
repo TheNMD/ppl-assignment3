@@ -1,1 +1,7 @@
- a : array [3,2] of float = {{2.0, 3.0}, {3.0, 4.0}, {5.0, 6.6}} ; b : integer = a[2, 1] ;
+
+        func : function float (a : integer, b : integer) {
+                x : integer ;
+                return func1(1 ,2) ;
+            }
+        func1 : function auto (x : integer, y : integer) {}
+        

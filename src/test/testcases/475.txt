@@ -1,1 +1,8 @@
- main : function auto (a : integer, b : float) {} x : integer = main(1) + 1 ; 
+
+        x : array [2, 2] of float = {{1.0, 2.0}, {3.0, 4.4}} ;  
+        b : float = x[0, 0] ;
+        func : function auto (a : auto, b : string) {
+            c : float ;
+            return ;
+            }
+        

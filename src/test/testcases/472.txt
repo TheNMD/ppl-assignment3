@@ -1,7 +1,8 @@
-
-        a : array [2, 2] of float = {{1.0, 2.0}, {3.0, 4.4}} ;  
-        func : function integer (a : auto, b : auto) {
+ 
+        func : function integer (a : auto, b : string) {
             a = {2, 3} ;
-            c : float ;
+            b = func1(1, 2) ;
             return ;
         } 
+        func1 : function auto (x : auto, y : auto) {}
+        
