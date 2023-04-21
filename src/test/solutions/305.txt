@@ -1,0 +1,4 @@
+Program([
+	VarDecl(x, IntegerType, FuncCall(func, [IntegerLit(1), IntegerLit(2), IntegerLit(3)]))
+	VarDecl(y, IntegerType, FuncCall(func1, []))
+])

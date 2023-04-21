@@ -1,0 +1,1 @@
+x,y,z,a,b,c: array [1,2,3] of integer; a,b,c: array [4,6,7] of float;

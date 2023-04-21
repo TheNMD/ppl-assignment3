@@ -1,0 +1,1 @@
+ int1 : integer = randfunc("yes",false,8_6, 9 / 2,b,arr[4,5,8%2]) ;

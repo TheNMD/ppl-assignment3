@@ -1,0 +1,7 @@
+func1 : function string (inherit c : string, inherit out d : string) {
+            temp : integer = 0 ;
+            return ftemp ;
+            }
+            func2 : function float (a : integer, out b : integer) {
+            return func1(2,3,5) ;   
+        }

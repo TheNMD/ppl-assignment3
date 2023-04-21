@@ -1,0 +1,3 @@
+Program([
+	FuncDecl(func1, FloatType, [Param(c, StringType), OutParam(d, BooleanType)], None, BlockStmt([VarDecl(arr1, ArrayType([2, 2, 23], BooleanType), ArrayLit([])), VarDecl(arr2, ArrayType([2, 2, 23], BooleanType), ArrayLit([ArrayLit([]), ArrayLit([])])), VarDecl(arr3, ArrayType([2, 2, 23], BooleanType), ArrayLit([ArrayLit([ArrayLit([ArrayLit([ArrayLit([])])])])]))]))
+])

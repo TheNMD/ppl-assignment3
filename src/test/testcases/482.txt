@@ -1,0 +1,8 @@
+
+        func : function float (a : integer, b : integer) inherit func1 {
+                func1(1, 2) ;
+            }
+        func1 : function auto (x : auto, y : auto) { 
+                return 2.3 ; 
+            }
+        

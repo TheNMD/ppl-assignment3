@@ -1,0 +1,3 @@
+Program([
+	VarDecl(_A330xr, IntegerType)
+])

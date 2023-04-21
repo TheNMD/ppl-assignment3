@@ -1,0 +1,4 @@
+func1 : function integer (c : string, out d : boolean) {
+            int1 : integer = -9 + 7 * 122 ; 
+            return int1 ;
+        }

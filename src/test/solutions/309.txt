@@ -1,0 +1,3 @@
+Program([
+	VarDecl(x, StringType, BinExpr(::, BinExpr(::, StringLit(abc), StringLit(cde)), StringLit(xyz)))
+])

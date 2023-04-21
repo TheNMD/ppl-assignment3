@@ -1,0 +1,4 @@
+main1 : function string () {
+            str = 7 - 9 * 4 - 6 ;
+            return ;
+            }

@@ -427,36 +427,65 @@ class CheckerSuite(unittest.TestCase):
     #     expect = "[]"
     #     self.assertTrue(TestChecker.test(input, expect, 479))
 
-    def test80(self):
+    # def test80(self):
+    #     input = """
+    #     x, y : integer = 2 , 3 ;
+    #     func : function integer (a : integer, b : integer) {
+    #                 while (1 < 9)
+    #                 {
+    #                     if (x > 20) 
+    #                         {
+    #                             a = 2 ;
+    #                             a = 3 ;
+    #                             break ;
+    #                         }
+    #                     else if (x < 15)
+    #                         {
+    #                             b = 2 ;
+    #                             b = 3 ;
+    #                             continue ;
+    #                         }
+    #                     else
+    #                         {
+    #                             a = 2 ;
+    #                             b = a ;
+    #                             break ;
+    #                         }
+    #                 }
+    #         }
+    #     """
+    #     expect = "[]"
+    #     self.assertTrue(TestChecker.test(input, expect, 480))
+        
+    # def test81(self):
+    #     input = """
+    #     func : function integer (a : integer, b : auto) {
+    #             while (9 < 10) {
+    #                 if (10 > 90) 
+    #                 { a : integer ;}
+    #                 else if (10 > 90) break ;
+    #                 else if (10 > 90) x = 9 ;
+    #                 else if (10 > 90) continue ;
+    #                 else if (10 > 90) break ;
+    #                 else u = 2 ;
+    #             }
+    #         }
+    #     """
+    #     expect = "Undeclared Identifier: x"
+    #     self.assertTrue(TestChecker.test(input, expect, 481))
+
+    def test82(self):
         input = """
-        x, y : integer = 2 , 3 ;
-        func : function integer (a : integer, b : integer) {
-                    while (1 < 9)
-                    {
-                        if (x > 20) 
-                            {
-                                a = 2 ;
-                                a = 3 ;
-                                break ;
-                            }
-                        else if (x < 15)
-                            {
-                                b = 2 ;
-                                b = 3 ;
-                                continue ;
-                            }
-                        else
-                            {
-                                a = 2 ;
-                                b = a ;
-                                break ;
-                            }
-                    }
+        func : function float (a : integer, b : integer) inherit func1 {
+                super(1, 2) ;
+            }
+        func1 : function auto (x : auto, y : auto) { 
+                return 2.3 ; 
             }
         """
         expect = "[]"
-        self.assertTrue(TestChecker.test(input, expect, 480))
-
+        self.assertTrue(TestChecker.test(input, expect, 482))
+    
     # def test71(self):
     #     input = """  main : function void () {} main1 : function integer (a : integer, b : float) inherit main2 {} main2 : function integer (c : integer, d : float) {} """
     #     expect = "[]"

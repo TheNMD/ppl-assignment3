@@ -1,0 +1,11 @@
+main1 : function string () {
+                {
+                    {
+                        {
+                            {
+                                return "123" :: "abc	\t" ;
+                            }
+                        }   
+                    }
+                }
+            }

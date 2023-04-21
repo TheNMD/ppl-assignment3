@@ -1,0 +1,10 @@
+func1 : function void (c : string, out d : boolean) {
+                writeFloat(a);
+                readFloat();
+                printBoolean(a);
+                readBoolean();
+                printString(a);
+                readString();
+                preventDefault();
+                super(b);
+            }

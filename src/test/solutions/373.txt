@@ -1,0 +1,3 @@
+Program([
+	FuncDecl(func1, StringType, [InheritParam(c, StringType), InheritOutParam(d, StringType)], None, BlockStmt([VarDecl(temp, IntegerType, IntegerLit(0)), ForStmt(AssignStmt(Id(i), IntegerLit(0)), BinExpr(<, Id(i), IntegerLit(10)), BinExpr(+, Id(i), IntegerLit(1)), BlockStmt([IfStmt(BinExpr(%, Id(i), IntegerLit(2)), AssignStmt(Id(temp), BinExpr(+, Id(temp), Id(i))), AssignStmt(Id(temp), BinExpr(+, Id(temp), IntegerLit(1))))])), ReturnStmt(Id(temp))]))
+])

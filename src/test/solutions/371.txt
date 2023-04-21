@@ -1,0 +1,3 @@
+Program([
+	VarDecl(str, StringType, StringLit({c}Y4enROD$$$!h%-~~V{9p>kXS6Ib>05))
+])

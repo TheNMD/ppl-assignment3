@@ -1,0 +1,5 @@
+Program([
+	VarDecl(boo1, BooleanType, BooleanLit(True))
+	VarDecl(boo2, BooleanType, BooleanLit(False))
+	VarDecl(boo3, BooleanType, BinExpr(||, BooleanLit(False), BooleanLit(True)))
+])

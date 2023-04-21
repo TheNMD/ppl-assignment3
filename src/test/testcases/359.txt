@@ -1,0 +1,1 @@
+main1 : function string () { res = true && !!!!func2(22) ; }

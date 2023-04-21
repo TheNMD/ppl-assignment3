@@ -1,0 +1,3 @@
+Program([
+	FuncDecl(main1, StringType, [], None, BlockStmt([IfStmt(BinExpr(>, Id(a), Id(b)), BreakStmt(), ContinueStmt())]))
+])

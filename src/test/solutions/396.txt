@@ -1,0 +1,4 @@
+Program([
+	VarDecl(randfloat, FloatType, BinExpr(%, FloatLit(1.33233e-20), ArrayCell(arr, [IntegerLit(2), IntegerLit(33), IntegerLit(2)])))
+	VarDecl(randarr, ArrayType([1, 3, 5], StringType), StringLit(string))
+])

@@ -1,0 +1,1 @@
+randfloat,b : float = 1_332.33e-23,.332e3 ;

@@ -1,0 +1,1 @@
+res : float = sin(a,b) / cos(c,d) ;

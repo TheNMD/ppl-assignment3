@@ -1,0 +1,3 @@
+Program([
+	FuncDecl(func1, VoidType, [Param(c, StringType), OutParam(d, BooleanType)], None, BlockStmt([CallStmt(printInteger, Id(a)), CallStmt(readInteger, )]))
+])

@@ -1,0 +1,10 @@
+main1 : function array [2,2] of string () {
+                if(a < 4)
+                {
+                        while(a < 23)
+                        {
+                                for (i = 8, i < 20, i / 2) {c = c + 1 ; }
+                        }
+                }
+                return; 
+            }

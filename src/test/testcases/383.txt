@@ -1,0 +1,6 @@
+main1 : function auto () {
+            for (i = 100, i < 100, i + 1)
+                for (j = i, j < 1000, j + 1)
+                    if (arr[i,j,i+j]) return 1;
+                    else return 0 ;
+        }

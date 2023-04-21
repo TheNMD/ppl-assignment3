@@ -1,0 +1,13 @@
+
+        func : function integer (a : integer, b : auto) {
+                while (9 < 10) {
+                    if (10 > 90) 
+                    { a : integer ;}
+                    else if (10 > 90) break ;
+                    else if (10 > 90) x = 9 ;
+                    else if (10 > 90) continue ;
+                    else if (10 > 90) break ;
+                    else u = 2 ;
+                }
+            }
+        

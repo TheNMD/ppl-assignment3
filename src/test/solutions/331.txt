@@ -1,0 +1,3 @@
+Program([
+	FuncDecl(main1, StringType, [], None, BlockStmt([AssignStmt(Id(bool), BinExpr(<, BinExpr(-, IntegerLit(7), IntegerLit(9)), BinExpr(-, IntegerLit(4), IntegerLit(6)))), ReturnStmt()]))
+])

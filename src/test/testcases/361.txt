@@ -1,0 +1,1 @@
+main1 : function string () {} main2 : function boolean () inherit main1 {}

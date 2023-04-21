@@ -1,0 +1,4 @@
+func1 : function float (c : string, out d : boolean) {
+            if(a == 7) c = a % 7 ;
+            else while (i < 20) { c = c + 1 ; }
+            }

@@ -1,0 +1,4 @@
+func1 : function float (c : string, out d : boolean) {
+            boo1 : boolean = !abc[2] && cde[0,1] ; 
+            return boo1 ;
+        }

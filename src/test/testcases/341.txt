@@ -1,0 +1,5 @@
+main1 : function array [2,2] of string () {
+                return 0;
+                return;
+                return 1; 
+            }

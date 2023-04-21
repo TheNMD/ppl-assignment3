@@ -1,0 +1,6 @@
+func1 : function integer (c : string, out d : boolean) {
+            for(i = 0, i < 100, i + 1)
+                for(j = i, j < 100, j + 1)
+                    if(arr[i,j] == true) return 220 ;
+            return int1 ;
+            }

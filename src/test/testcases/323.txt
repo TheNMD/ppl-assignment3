@@ -1,0 +1,11 @@
+func1 : function auto (out a : array [3,8] of integer, inherit b : float) {
+            randfloat : float = 1_332.33e-23 ;
+            randarr : array [7] of string ;
+            return 2233;
+            }
+        func2 : function void (c : string, out d : array [2,3] of boolean) inherit func1 {
+            if(a == 5) c = a % 7 ;
+            else d = a / 8 ;
+            randarr = arr1[1+1,3_3/3,5%4] + 332 - arr2[9/3]  ;
+            return;
+            }

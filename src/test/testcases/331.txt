@@ -1,0 +1,4 @@
+main1 : function string () {
+            bool = 7 - 9 < 4 - 6 ;
+            return ;
+            }

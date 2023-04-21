@@ -1,0 +1,8 @@
+main1 : function string () {
+            for(i = 0, i < 20, i + 1)
+            {
+                if(i % 6 == 3) continue ;
+                else if (i == 18) break ;
+            }
+            return;
+        }

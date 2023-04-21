@@ -1,0 +1,4 @@
+Program([
+	VarDecl(randfloat, FloatType, FloatLit(1.33233e-20))
+	VarDecl(b, FloatType, FloatLit(332.0))
+])

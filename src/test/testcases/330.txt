@@ -1,0 +1,5 @@
+main1 : function string () {
+            while(a < 23)
+            do {a = a / 9 ;}
+            while (a > 100) ;
+            }

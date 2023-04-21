@@ -1,0 +1,3 @@
+main1 : function string () {
+            for (i = k, i != 50, increase(i)) printInteger(i) ;
+            }

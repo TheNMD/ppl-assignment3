@@ -1,0 +1,4 @@
+main1 : function string () {
+            bool = ((1 < 2) < 3) < 4 ;
+            return ;
+            }

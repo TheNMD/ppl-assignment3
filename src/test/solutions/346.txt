@@ -1,0 +1,5 @@
+Program([
+	VarDecl(a, ArrayType([27, 3], FloatType), IntegerLit(1))
+	VarDecl(b, ArrayType([27, 3], FloatType), IntegerLit(2))
+	VarDecl(c, ArrayType([27, 3], FloatType), IntegerLit(3))
+])

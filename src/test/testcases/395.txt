@@ -1,0 +1,4 @@
+main1 : function string () {
+            arr = arr[arr[1],arr[2],arr[1+2,3+4]];
+            return ;
+            }

@@ -1,0 +1,8 @@
+main1 : function string () {
+            if (a < 5) 
+                if (b < 5) 
+                    if (c < 5) d = 5 ; 
+                    else if (true) e = 5 ; 
+                else if (true) f = 5 ; 
+            else if (false) g = 5 ; 
+}

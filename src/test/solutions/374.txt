@@ -1,0 +1,4 @@
+Program([
+	FuncDecl(func1, StringType, [InheritParam(c, StringType), InheritOutParam(d, StringType)], None, BlockStmt([VarDecl(temp, IntegerType, IntegerLit(0)), ReturnStmt(Id(ftemp))]))
+	FuncDecl(func2, FloatType, [Param(a, IntegerType), OutParam(b, IntegerType)], None, BlockStmt([ReturnStmt(FuncCall(func1, [IntegerLit(2), IntegerLit(3), IntegerLit(5)]))]))
+])

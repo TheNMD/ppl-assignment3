@@ -1,0 +1,13 @@
+main1 : function string () {
+            if(true)
+                {
+                    b : integer = 788 ;
+                    for (i = 2, i < randint, i - 1) if(i == -2) return i ;
+                }
+            else
+                {
+                    c : float = 788.33e-23 ;
+                    do { if(j > -9) { j = j + 1 ; } } 
+                    while (j < 20);
+                }
+            }

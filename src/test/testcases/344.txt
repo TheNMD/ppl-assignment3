@@ -1,0 +1,4 @@
+func1 : function void (c : string, out d : boolean) { 
+            do { for (i = 7, i < 13, i + 1) printInteger(i) ; }
+            while (True) ;
+            }

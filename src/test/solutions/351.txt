@@ -1,0 +1,3 @@
+Program([
+	FuncDecl(main1, StringType, [], None, BlockStmt([ForStmt(AssignStmt(Id(i), Id(k)), BinExpr(!=, Id(i), IntegerLit(50)), FuncCall(increase, [Id(i)]), CallStmt(printInteger, Id(i)))]))
+])

@@ -1,0 +1,4 @@
+Program([
+	FuncDecl(main1, StringType, [], None, BlockStmt([]))
+	FuncDecl(main2, BooleanType, [], main1, BlockStmt([]))
+])

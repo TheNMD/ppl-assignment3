@@ -1,0 +1,13 @@
+main: function void () {
+                if (a == 9)
+                {
+                        for (i = 5, i < 10, i + 1) a = a + i;
+                }
+                else if (c == 9)
+                {
+                        i : integer = 23 ;
+                        while (i < 5) i = i + 1 ;
+                }
+                else b = 20 ;
+                return ;
+        }

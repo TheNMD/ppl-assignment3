@@ -1,0 +1,5 @@
+main: function void () {
+                if (a == 9) b = 7 ;
+                else if (c == 9) b = 5 ;
+                else b = 20 ;
+        }

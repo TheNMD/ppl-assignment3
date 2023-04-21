@@ -1,0 +1,1 @@
+int1 : integer = randfunc(randfunc1(),randfunc2(1,2),randfunc3(rand(5))) ;

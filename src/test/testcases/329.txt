@@ -1,0 +1,4 @@
+main1 : function string () {
+            bool = "abc\t" != "abc	" ;
+            return ;
+            }

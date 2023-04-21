@@ -1,0 +1,4 @@
+main1 : function string () {
+                	str1, str2: string = "abcdef","";
+	                if (true || false) return str1::str2 ;
+            }

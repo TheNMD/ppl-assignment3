@@ -1,0 +1,1 @@
+main1 : function string () { return arr[.22/17, 11e3, 7_2.04] ; }

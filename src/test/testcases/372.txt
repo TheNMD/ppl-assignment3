@@ -1,0 +1,3 @@
+func1 : function string (inherit c : string, inherit out d : string) {
+            a : string = (c :: d) :: "abc" ;
+            }

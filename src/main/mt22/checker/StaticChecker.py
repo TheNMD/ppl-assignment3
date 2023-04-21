@@ -268,111 +268,166 @@ class StaticChecker(Visitor):
         name = ast.name
         args = ast.args
 
-        for idx in param:
-            if type(idx) == FuncDecl and name == idx.name:
-                
-                paraList = []
-                if idx.params:
-                    for para in idx.params:
-                        paraList += [self.visit(para, paraList)]
-                
-                # TODO Xem lai coi so arg khac so para thi loi gi
-                if len(args) == len(paraList):
-                    argList = []
-                    for i in range(len(args)):
-                        argList += [self.visit(args[i], param)]
-                    for i in range(len(args)):
-                        if type(paraList[i].typ) == IntegerType:
-                            if argList[i] != "IntegerType":
-                                if argList[i] == "AutoType":
-                                    for ele in param:
-                                        if type(ele) == FuncDecl and args[i].name == ele.name:
-                                            ele.return_type = IntegerType()
-                                            break
-                                else:
-                                    raise TypeMismatchInExpression(args[i])
-                        elif type(paraList[i].typ) == FloatType:
-                            if argList[i] != "IntegerType" and argList[i] != "FloatType":
-                                if argList[i] == "AutoType":
-                                    for ele in param:
-                                        if type(ele) == FuncDecl and args[i].name == ele.name:
-                                            ele.return_type = FloatType()
-                                            break
-                                else:
-                                    raise TypeMismatchInExpression(args[i])
-                        elif type(paraList[i].typ) == BooleanType:
-                            if argList[i] != "BooleanType":
-                                if argList[i] == "AutoType":
-                                    for ele in param:
-                                        if type(ele) == FuncDecl and args[i].name == ele.name:
-                                            ele.return_type = BooleanType()
-                                            break
-                                else:
-                                    raise TypeMismatchInExpression(args[i])
-                        elif type(paraList[i].typ) == StringType:
-                            if argList[i] != "StringType":
-                                if argList[i] == "AutoType":
-                                    for ele in param:
-                                        if type(ele) == FuncDecl and args[i].name == ele.name:
-                                            ele.return_type = StringType()
-                                            break
-                                else:
-                                    raise TypeMismatchInExpression(args[i])
-                        elif type(paraList[i].typ) == ArrayType:
-                            raise TypeMismatchInExpression(args[i])
-                        elif type(paraList[i].typ) == AutoType:
-                            for ele in param:
-                                if type(ele) == FuncDecl and name == ele.name:
-                                    if type(argList[i]) == str:
-                                        if argList[i] == "IntegerType":
-                                            ele.params[i].typ = IntegerType()
-                                        elif argList[i] == "FloatType":
-                                            ele.params[i].typ = FloatType()
-                                        elif argList[i] == "BooleanType":
-                                            ele.params[i].typ = BooleanType()
-                                        elif argList[i] == "StringType":
-                                            ele.params[i].typ = StringType()
-                                        elif argList[i] == "AutoType": 
-                                            pass
-                                        elif argList[i] == "VoidType": 
-                                            raise TypeMismatchInExpression(args[i])
-                                    else:
-                                        array_typ = argList[i][1]
-                                        dim = argList[i][2]
-                                        if array_typ == "IntegerType":
-                                            ele.params[i].typ = ArrayType(dim, IntegerType())
-                                        elif array_typ == "FloatType":
-                                            ele.params[i].typ = ArrayType(dim, FloatType())
-                                        elif array_typ == "BooleanType":
-                                            ele.params[i].typ = ArrayType(dim, BooleanType())
-                                        elif array_typ == "StringType":
-                                            ele.params[i].typ = ArrayType(dim, StringType())
-                                    break
-                        elif type(paraList[i].typ) == VoidType:
-                            raise TypeMismatchInExpression(args[i])
-                    
-                elif len(args) > len(paraList):
-                    raise TypeMismatchInExpression(args[len(paraList)])
-                elif len(args) < len(paraList):
-                     raise TypeMismatchInExpression("")
-                 
-                if type(idx.return_type) == IntegerType:
-                    return "IntegerType"
-                if type(idx.return_type) == FloatType:
-                    return "FloatType"
-                if type(idx.return_type) == BooleanType:
-                    return "BooleanType"
-                if type(idx.return_type) == StringType:
-                    return "StringType"
-                if type(idx.return_type) == ArrayType:
-                    return ["ArrayType", idx.return_type.typ, idx.return_type.dimensions]
-                if type(idx.return_type) == AutoType:
-                    return "AutoType"
-                elif type(idx.return_type) == VoidType:
-                    raise TypeMismatchInExpression(ast)
-                
+        if name == "readInteger":
+            if len(args) != 0:
+                raise TypeMismatchInExpression(args[0])
+            return "VoidType"
+        elif name == "printInteger":
+            if len(args) == 0:
+                raise TypeMismatchInExpression("")
+            elif len(args) == 1:
+                pass
+            elif len(args) > 1:
+                raise TypeMismatchInExpression(args[1])
+            return "VoidType"
+        elif name == "readFloat":
+            if len(args) != 0:
+                raise TypeMismatchInExpression(args[0])
+            return "VoidType"
+        elif name == "writeFloat":
+            if len(args) == 0:
+                raise TypeMismatchInExpression("")
+            elif len(args) == 1:
+                pass
+            elif len(args) > 1:
+                raise TypeMismatchInExpression(args[1])
+            return "VoidType"
+        elif name == "readBoolean":
+            if len(args) != 0:
+                raise TypeMismatchInExpression(args[0])
+            return "VoidType"
+        elif name == "printBoolean":
+            if len(args) == 0:
+                raise TypeMismatchInExpression("")
+            elif len(args) == 1:
+                pass
+            elif len(args) > 1:
+                raise TypeMismatchInExpression(args[1])
+            return "VoidType"
+        elif name == "readString":
+            if len(args) != 0:
+                raise TypeMismatchInExpression(args[0])
+            return "VoidType"
+        elif name == "printString":
+            if len(args) == 0:
+                raise TypeMismatchInExpression("")
+            elif len(args) == 1:
+                pass
+            elif len(args) > 1:
+                raise TypeMismatchInExpression(args[1])
+            return "VoidType"
+        elif name == "super":
+            raise TypeMismatchInExpression(ast)
+        elif name == "preventDefault":
+            raise TypeMismatchInExpression(ast)
         else:
-            raise Undeclared(Function(), name)
+            for idx in param:
+                if type(idx) == FuncDecl and name == idx.name:
+                    
+                    paraList = []
+                    if idx.params:
+                        for para in idx.params:
+                            paraList += [self.visit(para, paraList)]
+                    
+                    # TODO Xem lai coi so arg khac so para thi loi gi
+                    if len(args) == len(paraList):
+                        argList = []
+                        for i in range(len(args)):
+                            argList += [self.visit(args[i], param)]
+                        for i in range(len(args)):
+                            if paraList[i].out and type(args[i]) != Id:
+                                raise TypeMismatchInExpression(args[i])
+                            if type(paraList[i].typ) == IntegerType:
+                                if argList[i] != "IntegerType":
+                                    if argList[i] == "AutoType":
+                                        for ele in param:
+                                            if type(ele) == FuncDecl and args[i].name == ele.name:
+                                                ele.return_type = IntegerType()
+                                                break
+                                    else:
+                                        raise TypeMismatchInExpression(args[i])
+                            elif type(paraList[i].typ) == FloatType:
+                                if argList[i] != "IntegerType" and argList[i] != "FloatType":
+                                    if argList[i] == "AutoType":
+                                        for ele in param:
+                                            if type(ele) == FuncDecl and args[i].name == ele.name:
+                                                ele.return_type = FloatType()
+                                                break
+                                    else:
+                                        raise TypeMismatchInExpression(args[i])
+                            elif type(paraList[i].typ) == BooleanType:
+                                if argList[i] != "BooleanType":
+                                    if argList[i] == "AutoType":
+                                        for ele in param:
+                                            if type(ele) == FuncDecl and args[i].name == ele.name:
+                                                ele.return_type = BooleanType()
+                                                break
+                                    else:
+                                        raise TypeMismatchInExpression(args[i])
+                            elif type(paraList[i].typ) == StringType:
+                                if argList[i] != "StringType":
+                                    if argList[i] == "AutoType":
+                                        for ele in param:
+                                            if type(ele) == FuncDecl and args[i].name == ele.name:
+                                                ele.return_type = StringType()
+                                                break
+                                    else:
+                                        raise TypeMismatchInExpression(args[i])
+                            elif type(paraList[i].typ) == ArrayType:
+                                raise TypeMismatchInExpression(args[i])
+                            elif type(paraList[i].typ) == AutoType:
+                                for ele in param:
+                                    if type(ele) == FuncDecl and name == ele.name:
+                                        if type(argList[i]) == str:
+                                            if argList[i] == "IntegerType":
+                                                ele.params[i].typ = IntegerType()
+                                            elif argList[i] == "FloatType":
+                                                ele.params[i].typ = FloatType()
+                                            elif argList[i] == "BooleanType":
+                                                ele.params[i].typ = BooleanType()
+                                            elif argList[i] == "StringType":
+                                                ele.params[i].typ = StringType()
+                                            elif argList[i] == "AutoType": 
+                                                pass
+                                            elif argList[i] == "VoidType": 
+                                                raise TypeMismatchInExpression(args[i])
+                                        else:
+                                            array_typ = argList[i][1]
+                                            dim = argList[i][2]
+                                            if array_typ == "IntegerType":
+                                                ele.params[i].typ = ArrayType(dim, IntegerType())
+                                            elif array_typ == "FloatType":
+                                                ele.params[i].typ = ArrayType(dim, FloatType())
+                                            elif array_typ == "BooleanType":
+                                                ele.params[i].typ = ArrayType(dim, BooleanType())
+                                            elif array_typ == "StringType":
+                                                ele.params[i].typ = ArrayType(dim, StringType())
+                                        break
+                            elif type(paraList[i].typ) == VoidType:
+                                raise TypeMismatchInExpression(args[i])
+                        
+                    elif len(args) > len(paraList):
+                        raise TypeMismatchInExpression(args[len(paraList)])
+                    elif len(args) < len(paraList):
+                        raise TypeMismatchInExpression("")
+                    
+                    if type(idx.return_type) == IntegerType:
+                        return "IntegerType"
+                    if type(idx.return_type) == FloatType:
+                        return "FloatType"
+                    if type(idx.return_type) == BooleanType:
+                        return "BooleanType"
+                    if type(idx.return_type) == StringType:
+                        return "StringType"
+                    if type(idx.return_type) == ArrayType:
+                        return ["ArrayType", idx.return_type.typ, idx.return_type.dimensions]
+                    if type(idx.return_type) == AutoType:
+                        return "AutoType"
+                    elif type(idx.return_type) == VoidType:
+                        raise TypeMismatchInExpression(ast)
+                    
+            else:
+                raise Undeclared(Function(), name)
     
     # Statements
     def visitAssignStmt(self, ast, param):
@@ -387,37 +442,61 @@ class StaticChecker(Visitor):
         if id == "IntegerType":
             if value != "IntegerType":
                 if value == "AutoType":
-                    for ele in param[-1]:
-                        if type(ele) == FuncDecl and rhs.name == ele.name:
-                            ele.return_type = IntegerType()
-                            break
+                    if type(rhs) == FuncDecl:
+                        for ele in param[-1]:
+                            if type(ele) == FuncDecl and rhs.name == ele.name:
+                                ele.return_type = IntegerType()
+                                break
+                    else:
+                        for ele in param:
+                            if type(ele) == ParamDecl and rhs.name == ele.name:
+                                ele.typ = IntegerType()
+                                break
                 else:
                     raise TypeMismatchInStatement(ast)
         elif id == "FloatType":
             if value != "IntegerType" and value != "FloatType":
                 if value == "AutoType":
-                    for ele in param[-1]:
-                        if type(ele) == FuncDecl and rhs.name == ele.name:
-                            ele.return_type = FloatType()
-                            break
+                    if type(rhs) == FuncDecl:
+                        for ele in param[-1]:
+                            if type(ele) == FuncDecl and rhs.name == ele.name:
+                                ele.return_type = FloatType()
+                                break
+                    else:
+                        for ele in param:
+                            if type(ele) == ParamDecl and rhs.name == ele.name:
+                                ele.typ = FloatType()
+                                break
                 else:
                     raise TypeMismatchInStatement(ast)
         elif id == "BooleanType":
             if value != "BooleanType":
                 if value == "AutoType":
-                    for ele in param[-1]:
-                        if type(ele) == FuncDecl and rhs.name == ele.name:
-                            ele.return_type = BooleanType()
-                            break
+                    if type(rhs) == FuncDecl:
+                        for ele in param[-1]:
+                            if type(ele) == FuncDecl and rhs.name == ele.name:
+                                ele.return_type = BooleanType()
+                                break
+                    else:
+                        for ele in param:
+                            if type(ele) == ParamDecl and rhs.name == ele.name:
+                                ele.typ = BooleanType()
+                                break
                 else:
                     raise TypeMismatchInStatement(ast)
         elif id == "StringType":
             if value != "StringType":
                 if value == "AutoType":
-                    for ele in param[-1]:
-                        if type(ele) == FuncDecl and rhs.name == ele.name:
-                            ele.return_type = StringType()
-                            break
+                    if type(rhs) == FuncDecl:
+                        for ele in param[-1]:
+                            if type(ele) == FuncDecl and rhs.name == ele.name:
+                                ele.return_type = StringType()
+                                break
+                    else:
+                        for ele in param:
+                            if type(ele) == ParamDecl and rhs.name == ele.name:
+                                ele.typ = StringType()
+                                break
                 else:
                     raise TypeMismatchInStatement(ast)
         elif id == "ArrayType":
@@ -457,7 +536,7 @@ class StaticChecker(Visitor):
     def visitBlockStmt(self, ast, param):
         body = ast.body
         local_evn = param.copy()
-        if type(local_evn[0]) != VarDecl and type(local_evn[0]) != ParamDecl and type(local_evn[0]) != FuncDecl:
+        if type(local_evn[0]) != VarDecl and type(local_evn[0]) != ParamDecl and type(local_evn[0]) != FuncDecl and type(local_evn[0]) != str:
             local_evn = local_evn[::-1]
         if body:
             for i in range(len(body)):
@@ -540,7 +619,17 @@ class StaticChecker(Visitor):
             self.visit(stmt, loop_evn)
         except Exception as e:
             if len(e.args) == 2 and type(e.args[0]) == MustInLoop:
-                pass
+                if type(e.args[1]) == Redeclared or type(e.args[1]) == Undeclared or type(e.args[1]) == Invalid or type(e.args[1]) == TypeMismatchInVarDecl or type(e.args[1]) == TypeMismatchInExpression or type(e.args[1]) == TypeMismatchInStatement or type(e.args[1]) == IllegalArrayLiteral or type(e.args[1]) == InvalidStatementInFunction:
+                    error = e.args[1]
+                else:
+                    error = e.args[1].args
+                    while type(error[0]) == MustInLoop:
+                        if type(error[1]) == Redeclared or type(error[1]) == Undeclared or type(error[1]) == Invalid or type(error[1]) == TypeMismatchInVarDecl or type(error[1]) == TypeMismatchInExpression or type(error[1]) == TypeMismatchInStatement or type(error[1]) == IllegalArrayLiteral or type(error[1]) == InvalidStatementInFunction:
+                            error = error[1]
+                            break
+                        else: 
+                            error = error[1].args
+                raise error
             else:
                 if type(e) == MustInLoop:
                     pass
@@ -565,7 +654,17 @@ class StaticChecker(Visitor):
             self.visit(stmt, param)
         except Exception as e:
             if len(e.args) == 2 and type(e.args[0]) == MustInLoop:
-                pass
+                if type(e.args[1]) == Redeclared or type(e.args[1]) == Undeclared or type(e.args[1]) == Invalid or type(e.args[1]) == TypeMismatchInVarDecl or type(e.args[1]) == TypeMismatchInExpression or type(e.args[1]) == TypeMismatchInStatement or type(e.args[1]) == IllegalArrayLiteral or type(e.args[1]) == InvalidStatementInFunction:
+                    error = e.args[1]
+                else:
+                    error = e.args[1].args
+                    while type(error[0]) == MustInLoop:
+                        if type(error[1]) == Redeclared or type(error[1]) == Undeclared or type(error[1]) == Invalid or type(error[1]) == TypeMismatchInVarDecl or type(error[1]) == TypeMismatchInExpression or type(error[1]) == TypeMismatchInStatement or type(error[1]) == IllegalArrayLiteral or type(error[1]) == InvalidStatementInFunction:
+                            error = error[1]
+                            break
+                        else: 
+                            error = error[1].args
+                raise error
             else:
                 if type(e) == MustInLoop:
                     pass
@@ -582,7 +681,17 @@ class StaticChecker(Visitor):
             self.visit(stmt, param)
         except Exception as e:
             if len(e.args) == 2 and type(e.args[0]) == MustInLoop:
-                pass
+                if type(e.args[1]) == Redeclared or type(e.args[1]) == Undeclared or type(e.args[1]) == Invalid or type(e.args[1]) == TypeMismatchInVarDecl or type(e.args[1]) == TypeMismatchInExpression or type(e.args[1]) == TypeMismatchInStatement or type(e.args[1]) == IllegalArrayLiteral or type(e.args[1]) == InvalidStatementInFunction:
+                    error = e.args[1]
+                else:
+                    error = e.args[1].args
+                    while type(error[0]) == MustInLoop:
+                        if type(error[1]) == Redeclared or type(error[1]) == Undeclared or type(error[1]) == Invalid or type(error[1]) == TypeMismatchInVarDecl or type(error[1]) == TypeMismatchInExpression or type(error[1]) == TypeMismatchInStatement or type(error[1]) == IllegalArrayLiteral or type(error[1]) == InvalidStatementInFunction:
+                            error = error[1]
+                            break
+                        else: 
+                            error = error[1].args
+                raise error
             else:
                 if type(e) == MustInLoop:
                     pass
@@ -790,6 +899,9 @@ class StaticChecker(Visitor):
                             if type(ele) == FuncDecl and init.name == ele.name:
                                 ele.return_type = IntegerType()
                                 break
+                            elif type(ele) == ParamDecl and init.name == ele.name:
+                                ele.typ = IntegerType()
+                                break
                     else:
                         raise TypeMismatchInVarDecl(ast)
             elif typ == "FloatType":
@@ -798,6 +910,9 @@ class StaticChecker(Visitor):
                         for ele in param:
                             if type(ele) == FuncDecl and init.name == ele.name:
                                 ele.return_type = FloatType()
+                                break
+                            elif type(ele) == ParamDecl and init.name == ele.name:
+                                ele.typ = FloatType()
                                 break
                     else:
                         raise TypeMismatchInVarDecl(ast)
@@ -808,6 +923,9 @@ class StaticChecker(Visitor):
                             if type(ele) == FuncDecl and init.name == ele.name:
                                 ele.return_type = BooleanType()
                                 break
+                            elif type(ele) == ParamDecl and init.name == ele.name:
+                                ele.typ = BooleanType()
+                                break
                     else: 
                         raise TypeMismatchInVarDecl(ast)
             elif typ == "StringType":
@@ -816,6 +934,9 @@ class StaticChecker(Visitor):
                         for ele in param:
                             if type(ele) == FuncDecl and init.name == ele.name:
                                 ele.return_type = StringType()
+                                break
+                            elif type(ele) == ParamDecl and init.name == ele.name:
+                                ele.typ = StringType()
                                 break
                     else: 
                         raise TypeMismatchInVarDecl(ast)
@@ -831,6 +952,16 @@ class StaticChecker(Visitor):
                                 ele.return_type = ArrayType(dim, BooleanType())
                             elif array_typ == "StringType":
                                 ele.return_type = ArrayType(dim, StringType())
+                            break
+                        elif type(ele) == ParamDecl and init.name == ele.name:
+                            if array_typ == "IntegerType":
+                                ele.typ = ArrayType(dim, IntegerType())
+                            elif array_typ == "FloatType":
+                                ele.typ = ArrayType(dim, FloatType())
+                            elif array_typ == "BooleanType":
+                                ele.typ = ArrayType(dim, BooleanType())
+                            elif array_typ == "StringType":
+                                ele.typ = ArrayType(dim, StringType())
                             break
                 else:
                     dimRes = checkArrayDim(initValue, dim, 0)
@@ -909,13 +1040,29 @@ class StaticChecker(Visitor):
         if inherit:
             for ele in param[0]:
                 if inherit == ele.name:
-                    father = ele
+                    parent = ele
                     break
             else:
-                raise Undeclared(Function(), name)
-            # print(father)
-        else:
+                raise Undeclared(Function(), inherit)
             
+            fist_stmt = body.body[0]
+            if parent.params:
+                if type(fist_stmt) == FuncCall:
+                    if fist_stmt.name == "super":
+                        pass
+                    else:
+                        raise InvalidStatementInFunction(name)
+                else:
+                    raise InvalidStatementInFunction(name)
+            else:
+                print(fist_stmt)
+            
+            for body_ele in body.body:  
+                if type(body_ele) == VarDecl:
+                    for para_ele in paraList:
+                        if para_ele.name == body_ele.name:
+                            raise Redeclared(Variable(), body_ele.name)
+        else:
             for body_ele in body.body:  
                 if type(body_ele) == VarDecl:
                     for para_ele in paraList:
@@ -953,7 +1100,7 @@ class StaticChecker(Visitor):
             param += [self.visit(ele, param)]
         
         # print(param[2].return_type)
-        # print(param[2].params[1].typ)
+        # print(param[1].params[0].typ)
         
         # for ele in prototype:
         #     print(len(ele.params))

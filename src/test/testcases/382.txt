@@ -1,0 +1,9 @@
+main1 : function auto () {
+            do 
+                {                
+                    while (b < 100)
+                        do {}
+                        while (c == 100) ;
+                }
+            while (a > 100) ;
+        }

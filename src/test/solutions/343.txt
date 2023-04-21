@@ -1,0 +1,3 @@
+Program([
+	FuncDecl(func1, VoidType, [Param(c, StringType), OutParam(d, BooleanType)], None, BlockStmt([CallStmt(writeFloat, Id(a)), CallStmt(readFloat, ), CallStmt(printBoolean, Id(a)), CallStmt(readBoolean, ), CallStmt(printString, Id(a)), CallStmt(readString, ), CallStmt(preventDefault, ), CallStmt(super, Id(b))]))
+])

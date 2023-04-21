@@ -1,0 +1,5 @@
+func1 : function float (c : string, out d : boolean) {
+            if(a == 5) c = a % 7 ;
+            else if (a == 4) for (i = 8, i < 20, i / 2) { c = c + 1 ; }
+            return 1.223e20 ;
+            }

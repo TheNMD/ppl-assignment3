@@ -1,0 +1,4 @@
+Program([
+	FuncDecl(func1, AutoType, [OutParam(a, ArrayType([3, 8], IntegerType)), InheritParam(b, FloatType)], None, BlockStmt([VarDecl(randfloat, FloatType, FloatLit(1.33233e-20)), VarDecl(randarr, ArrayType([7], StringType)), ReturnStmt(IntegerLit(2233))]))
+	FuncDecl(func2, VoidType, [Param(c, StringType), OutParam(d, ArrayType([2, 3], BooleanType))], func1, BlockStmt([IfStmt(BinExpr(==, Id(a), IntegerLit(5)), AssignStmt(Id(c), BinExpr(%, Id(a), IntegerLit(7))), AssignStmt(Id(d), BinExpr(/, Id(a), IntegerLit(8)))), AssignStmt(Id(randarr), BinExpr(-, BinExpr(+, ArrayCell(arr1, [BinExpr(+, IntegerLit(1), IntegerLit(1)), BinExpr(/, IntegerLit(33), IntegerLit(3)), BinExpr(%, IntegerLit(5), IntegerLit(4))]), IntegerLit(332)), ArrayCell(arr2, [BinExpr(/, IntegerLit(9), IntegerLit(3))]))), ReturnStmt()]))
+])

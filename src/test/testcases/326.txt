@@ -1,0 +1,3 @@
+func1 : function float (c : string, out d : boolean) {
+                arr1, arr2, arr3 : array [2,2,2_3] of boolean = {}, {{},{}}, {{{{{}}}}} ;
+            }

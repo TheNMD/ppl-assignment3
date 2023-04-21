@@ -1,0 +1,4 @@
+main1 : function string () {
+            str = (("abc" :: "cde") :: "123") :: "456" ;
+            return ;
+            }

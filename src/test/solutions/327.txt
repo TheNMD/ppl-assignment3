@@ -1,0 +1,3 @@
+Program([
+	VarDecl(res, FloatType, BinExpr(/, FuncCall(sin, [Id(a), Id(b)]), FuncCall(cos, [Id(c), Id(d)])))
+])

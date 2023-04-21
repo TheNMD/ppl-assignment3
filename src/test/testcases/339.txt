@@ -1,0 +1,5 @@
+main1 : function array [2,2] of string (inherit a : array [2,3] of string, out b : array [3,3] of boolean) {
+            while(a < 23)
+            do {a = a / 9 ;}
+            while (a > 100) ;
+            }
