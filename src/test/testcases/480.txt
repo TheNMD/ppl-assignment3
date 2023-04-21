@@ -1,0 +1,26 @@
+
+        x, y : integer = 2 , 3 ;
+        func : function integer (a : integer, b : integer) {
+                    while (1 < 9)
+                    {
+                        if (x > 20) 
+                            {
+                                a = 2 ;
+                                a = 3 ;
+                                break ;
+                            }
+                        else if (x < 15)
+                            {
+                                b = 2 ;
+                                b = 3 ;
+                                continue ;
+                            }
+                        else
+                            {
+                                a = 2 ;
+                                b = a ;
+                                break ;
+                            }
+                    }
+            }
+        

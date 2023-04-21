@@ -487,14 +487,37 @@ class StaticChecker(Visitor):
         if condition != "BooleanType":
             raise TypeMismatchInStatement(ast)
         
-        # TODO break / continue o if else
-        
-        self.visit(tstmt, param)
         if fstmt:
-            self.visit(fstmt, param) 
+            try:
+                self.visit(tstmt, param)
+            except Exception as true_e:
+                if type(true_e) == MustInLoop:
+                    try:
+                        self.visit(fstmt, param)
+                    except Exception as false_e:
+                        if type(false_e) == MustInLoop:
+                            raise true_e
+                        else:
+                            raise Exception(true_e, false_e)
+                    else:
+                        raise true_e
+                else:
+                    raise true_e
+            else:
+                try:
+                    self.visit(fstmt, param)
+                except Exception as false_e:
+                    raise false_e
+                else:
+                    return ast
+        else:
+            try:
+                self.visit(tstmt, param)
+            except Exception as false_e:
+                raise false_e
+            else:
+                return ast
         
-        return ast
-    
     def visitForStmt(self, ast, param):
         init = ast.init
         cond = ast.cond
@@ -512,12 +535,18 @@ class StaticChecker(Visitor):
         condition = self.visit(cond, loop_evn)
         if condition != "BooleanType":
             raise TypeMismatchInStatement(ast)
-        
+
         try:
             self.visit(stmt, loop_evn)
-        except MustInLoop:
-            pass
-
+        except Exception as e:
+            if len(e.args) == 2 and type(e.args[0]) == MustInLoop:
+                pass
+            else:
+                if type(e) == MustInLoop:
+                    pass
+                else:
+                    raise e
+        
         update = self.visit(upd, loop_evn)
         if update != "IntegerType":
             raise TypeMismatchInStatement(ast)
@@ -534,9 +563,15 @@ class StaticChecker(Visitor):
         
         try:
             self.visit(stmt, param)
-        except MustInLoop:
-            pass
-        
+        except Exception as e:
+            if len(e.args) == 2 and type(e.args[0]) == MustInLoop:
+                pass
+            else:
+                if type(e) == MustInLoop:
+                    pass
+                else:
+                    raise e
+
         return ast
     
     def visitDoWhileStmt(self, ast, param):
@@ -545,13 +580,19 @@ class StaticChecker(Visitor):
         
         try:
             self.visit(stmt, param)
-        except MustInLoop:
-            pass
-        
+        except Exception as e:
+            if len(e.args) == 2 and type(e.args[0]) == MustInLoop:
+                pass
+            else:
+                if type(e) == MustInLoop:
+                    pass
+                else:
+                    raise e
+                
         condition = self.visit(cond, param)
         if condition != "BooleanType":
             raise TypeMismatchInStatement(ast)
-        
+    
         return ast
     
     def visitBreakStmt(self, ast, param):
@@ -880,9 +921,14 @@ class StaticChecker(Visitor):
                     for para_ele in paraList:
                         if para_ele.name == body_ele.name:
                             raise Redeclared(Variable(), body_ele.name)
-            
-            self.visit(body, param + paraList + [name])
-                    
+            try:
+                self.visit(body, param + paraList + [name])
+            except Exception as e:
+                if len(e.args) == 2 and type(e.args[0]) == MustInLoop:
+                    raise e.args[0]
+                else:
+                    raise e
+
         return ast
         
     def visitProgram(self, ast, param):
