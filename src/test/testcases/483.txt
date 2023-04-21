@@ -1,0 +1,7 @@
+
+        foo: function auto (i: auto) { 
+            i = 2 ;
+            return true ;
+            i = true ;   
+        }
+        

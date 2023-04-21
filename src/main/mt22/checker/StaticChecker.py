@@ -574,6 +574,8 @@ class StaticChecker(Visitor):
                         local_evn.insert(0, self.visit(ele, local_evn))
                 else:
                     self.visit(ele, local_evn)
+                    if type(ele) == ReturnStmt:
+                        break
         
         return ast
     
@@ -736,7 +738,7 @@ class StaticChecker(Visitor):
         
         if expr:
             if type(expr) == FuncCall:
-                return_typ = self.visit(expr, param[-1])
+                return_typ = self.visit(expr, param + param[-1])
             else:
                 return_typ = self.visit(expr, param)
         else:
@@ -857,6 +859,8 @@ class StaticChecker(Visitor):
         else:
             for idx in param[-1]:
                 if name == idx.name:
+                    if type(idx.return_typ) != VoidType:
+                        raise TypeMismatchInStatement(ast)
                     paraList = []
                     if idx.params:
                         for para in idx.params:
@@ -944,8 +948,6 @@ class StaticChecker(Visitor):
                     elif len(args) < len(paraList):
                         raise TypeMismatchInExpression("")
 
-                    if type(idx.return_type) == AutoType:
-                        idx.return_type = VoidType()
                     break
                     
             else:
@@ -959,12 +961,14 @@ class StaticChecker(Visitor):
         name = ast.name
         typ, array_typ, dim = self.visit(ast.typ, [])
         init = ast.init
-        
+
         if init:
             initValue = self.visit(init, param)
+            print(name, init, initValue)
             # TODO Xem lai TypeMismatchInVarDecl raise o ast hay init
             if typ == "IntegerType":
                 if initValue != "IntegerType":
+                    print(initValue)
                     if initValue == "AutoType":
                         for ele in param:
                             if type(ele) == FuncDecl and init.name == ele.name:
