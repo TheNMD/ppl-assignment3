@@ -1,5 +1,8 @@
 
         func : function integer (a : integer, b : integer) {
-                printInteger("2") ;
+            a = 2 ;
+            b = 5 ;
+            if (a > b) break ;
+            else continue ;
             }
         

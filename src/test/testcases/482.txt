@@ -1,8 +1,11 @@
 
         func : function float (a : integer, b : integer) inherit func1 {
-                func1(1, 2) ;
+                super(2, func2(true, 2.3)) ;
             }
-        func1 : function auto (x : auto, y : auto) { 
-                return 2.3 ; 
+        func1 : function string (inherit x : integer, inherit y : string, z : string) { 
+                return "2.3" ; 
+            }
+        func2 : function auto (c : auto, d : auto) { 
+                return "2" ; 
             }
         
