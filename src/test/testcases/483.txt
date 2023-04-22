@@ -1,7 +1,4 @@
-
-        foo: function auto (i: auto) { 
-            i = 2 ;
-            return true ;
-            i = true ;   
-        }
-        
+Program([
+	VarDecl(a, IntegerType, IntegerLit(5))
+	VarDecl(c, AutoType)
+])

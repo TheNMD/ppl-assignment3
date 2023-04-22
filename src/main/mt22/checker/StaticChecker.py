@@ -557,6 +557,7 @@ class StaticChecker(Visitor):
     def visitBlockStmt(self, ast, param):
         body = ast.body
         local_evn = param.copy()
+        return_counter = 0
         if type(local_evn[0]) != VarDecl and type(local_evn[0]) != ParamDecl and type(local_evn[0]) != FuncDecl and type(local_evn[0]) != str:
             local_evn = local_evn[::-1]
         if body:
@@ -573,9 +574,14 @@ class StaticChecker(Visitor):
                     else:
                         local_evn.insert(0, self.visit(ele, local_evn))
                 else:
-                    self.visit(ele, local_evn)
                     if type(ele) == ReturnStmt:
-                        break
+                        if return_counter == 0:
+                            self.visit(ele, local_evn)
+                            return_counter += 1
+                        else:
+                            continue
+                    else:
+                        self.visit(ele, local_evn)
         
         return ast
     
@@ -859,7 +865,7 @@ class StaticChecker(Visitor):
         else:
             for idx in param[-1]:
                 if name == idx.name:
-                    if type(idx.return_typ) != VoidType:
+                    if type(idx.return_type) == VoidType:
                         raise TypeMismatchInStatement(ast)
                     paraList = []
                     if idx.params:
@@ -964,11 +970,9 @@ class StaticChecker(Visitor):
 
         if init:
             initValue = self.visit(init, param)
-            print(name, init, initValue)
             # TODO Xem lai TypeMismatchInVarDecl raise o ast hay init
             if typ == "IntegerType":
                 if initValue != "IntegerType":
-                    print(initValue)
                     if initValue == "AutoType":
                         for ele in param:
                             if type(ele) == FuncDecl and init.name == ele.name:
@@ -1282,19 +1286,11 @@ class StaticChecker(Visitor):
         for ele in ast.decls:
             param += [self.visit(ele, param)]
         
-        # print(param[3].return_type)
-        # print(param[3].params[0].typ)
-        # print(param[3].params[1].typ)
-        
         # for ele in prototype:
-        #     print(len(ele.params))
         #     if ele.name == "main" and len(ele.params) == 0 and ele.return_type == VoidType():
         #         break
         # else:
         #     raise NoEntryPoint()
         
-        # prototype = [FuncDecl0, FuncDecl1, FuncDecl2, ...]
-        # param = [prototype, Decl0, Decl1, Decl2, ...]
-        # for ele in param:
-        #     print(ele)
+
 
