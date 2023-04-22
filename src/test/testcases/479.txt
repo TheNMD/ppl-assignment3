@@ -3,4 +3,5 @@
                 func1(1, 2) ;
             }
         func1 : function auto (x : auto, y : auto) {}
+        main : function void () {}
         

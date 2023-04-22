@@ -1,1 +1,1 @@
-x, y : integer = 2, x ;
+x, y : integer = 2, x ; main : function void () {}

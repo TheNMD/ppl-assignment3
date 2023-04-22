@@ -1,1 +1,1 @@
- a : auto = "false" ; b : auto = a :: "true" ;
+ a : auto = "false" ; b : auto = a :: "true" ; main : function void () {}

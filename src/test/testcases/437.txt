@@ -1,1 +1,1 @@
- a : boolean = false ; x : boolean = !a ;
+ a : boolean = false ; x : boolean = !a ; main : function void () {}

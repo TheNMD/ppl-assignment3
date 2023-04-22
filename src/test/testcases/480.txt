@@ -23,4 +23,5 @@
                             }
                     }
             }
+        main : function void () {}
         

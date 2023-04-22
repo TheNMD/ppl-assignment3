@@ -1,0 +1,8 @@
+
+        func1 : function auto (inherit x : auto, y : auto) {
+            return "2" ;
+        }
+        a: string ;
+        x : float = func1(func1(func1("1", "2"), func1("3", "4")), func1(func1(a, "6"), func1(7, 8))) ;
+        main : function void () {}
+        

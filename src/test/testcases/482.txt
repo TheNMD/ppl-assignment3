@@ -2,7 +2,7 @@
         func : function float (a : integer, b : integer) {
                 return 1 ;
                 return true ;
-                {return 2 ; return 2.2 ;}
-                
+                {return 2 ; return 2.2 ;} 
             }
+        main : function void () {}
         

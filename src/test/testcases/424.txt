@@ -1,1 +1,1 @@
-a, b, c : integer ; d : float = a + b + c ;
+a, b, c : integer ; d : float = a + b + c ; main : function void () {}

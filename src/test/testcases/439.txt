@@ -1,1 +1,1 @@
- x : integer ; a : array [3,1] of integer = {{1}, {2}, {x}} ;
+ x : integer ; a : array [3,1] of integer = {{1}, {2}, {x}} ; main : function void () {}

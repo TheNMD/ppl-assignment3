@@ -1,1 +1,1 @@
- x : float = -2.5554 + 3 + -4.2 ;
+ x : float = -2.5554 + 3 + -4.2 ; main : function void () {}

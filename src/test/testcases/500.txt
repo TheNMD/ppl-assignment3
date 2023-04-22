@@ -1,0 +1,9 @@
+
+            func : function auto (x : auto, y : auto) inherit func1 {
+                return ;
+            }
+            func1 : function auto (inherit x : auto, y : auto) {
+                return 2 ;
+            }
+            main : function void () {}
+            

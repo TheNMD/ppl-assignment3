@@ -1,0 +1,12 @@
+
+        x : integer = 2 ;
+        y : string = "42" ;
+        func : function boolean (inherit a : auto, inherit b : auto) inherit func1 {
+                super(x, y) ;
+                return true;
+            }
+        func1 : function auto (inherit out c : auto, inherit out d : auto) {
+                return ;
+        }
+        main : function void () {}
+        

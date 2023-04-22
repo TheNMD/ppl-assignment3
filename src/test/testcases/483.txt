@@ -1,4 +1,15 @@
-Program([
-	VarDecl(a, IntegerType, IntegerLit(5))
-	VarDecl(c, AutoType)
-])
+
+        func : function boolean (inherit a : auto, inherit b : auto) inherit func1 {
+                super(1, 2) ;
+                return true;
+            }
+        func1 : function auto (inherit c : auto, inherit d : auto) inherit func2 {
+                super(3, 4) ;
+                return ;
+        }
+        func2 : function integer (inherit e : auto, inherit f : auto) inherit func {
+                super(5, 6) ;
+                return 2;
+        }
+        main : function void () {}
+        

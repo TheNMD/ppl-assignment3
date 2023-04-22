@@ -1,1 +1,1 @@
- x, y : integer ; a : array [2] of integer = {1 + x, 2 * y} ;
+ x, y : integer ; a : array [2] of integer = {1 + x, 2 * y} ; main : function void () {}

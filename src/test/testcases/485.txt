@@ -1,0 +1,11 @@
+
+        x : integer = 2 ;
+        y : float = 2.1 ;
+        func : function auto (inherit a : auto, inherit b : auto) {
+                if (x > y) { return "true" ; return false ; }
+                else { return "false" ; return true ; }
+                return "yes" ;
+                return 2 ;
+            }
+        main : function void () {}
+        

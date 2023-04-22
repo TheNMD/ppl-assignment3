@@ -1,1 +1,1 @@
- a : string = "2" :: "33" ;
+ a : string = "2" :: "33" ; main : function void () {}

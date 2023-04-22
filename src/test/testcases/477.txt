@@ -4,4 +4,5 @@
                 return func1(1 ,2) ;
             }
         func1 : function auto (x : integer, y : integer) {}
+        main : function void () {}
         

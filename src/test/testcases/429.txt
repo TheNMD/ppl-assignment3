@@ -1,1 +1,1 @@
- a : boolean = 3 >= 3.4 ;
+ a : boolean = 3 >= 3.4 ; main : function void () {}

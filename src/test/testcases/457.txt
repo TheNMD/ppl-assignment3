@@ -1,1 +1,1 @@
- y: auto = 2 ; x : auto = y + {1, 2, 3}; 
+ main : function integer () {} 

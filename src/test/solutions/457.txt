@@ -1,1 +1,1 @@
-Type mismatch in expression: BinExpr(+, Id(y), ArrayLit([IntegerLit(1), IntegerLit(2), IntegerLit(3)]))
+No entry point

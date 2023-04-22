@@ -1,1 +1,1 @@
- a, b : auto = a + 1.23, true || b ; 
+ main : function void () {}

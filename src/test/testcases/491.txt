@@ -1,0 +1,11 @@
+
+            func : function auto (inherit a : auto, inherit b : auto) inherit func1 {
+                super(func1(func1(1.1, 2.2), func1(3, 4))) ;
+                x = true ;
+                return ;
+            }
+            func1 : function auto (inherit x : auto, y : auto) {
+                return 2 ;
+            }
+            main : function void () {}
+            

@@ -1,0 +1,26 @@
+
+        x : integer = 2 ;
+        y : float = 2.1 ;
+        func : function auto (inherit a : auto, inherit b : auto) {
+                while (0 != 1)
+                {
+                    if (x > y)
+                    {
+                        if (x > y)
+                        {
+                            if (x > y) break;
+                            else
+                            {
+                                x = 3 ;
+                                y = 1.2 ;
+                                continue ;
+                                x = true ;
+                            }
+                        }
+                        else break ;
+                    }
+                    else a = c ;
+                }
+            }
+        main : function void () {}
+        

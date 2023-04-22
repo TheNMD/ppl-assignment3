@@ -1,1 +1,1 @@
-x : integer ; y : integer ; 
+x : integer ; y : integer ; main : function void () {} 

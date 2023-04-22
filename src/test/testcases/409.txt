@@ -1,1 +1,1 @@
-a : string ; b : string = a ;
+a : string ; b : string = a ; main : function void () {}

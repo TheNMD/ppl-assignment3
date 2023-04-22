@@ -1,1 +1,1 @@
-c, b : integer ; a : boolean = a && (c == b) ;
+a : boolean = true || false || true ;

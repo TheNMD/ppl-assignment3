@@ -4,7 +4,7 @@ from AST import *
 
 class CheckerSuite(unittest.TestCase):
     def test1(self):
-        input = """x : integer ; y : integer ; """
+        input = """x : integer ; y : integer ; main : function void () {} """
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 401))
         
@@ -24,7 +24,7 @@ class CheckerSuite(unittest.TestCase):
         self.assertTrue(TestChecker.test(input, expect, 404))
         
     def test5(self):
-        input = """x, y : integer = 2, x ;"""
+        input = """x, y : integer = 2, x ; main : function void () {}"""
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 405))
     
@@ -39,12 +39,12 @@ class CheckerSuite(unittest.TestCase):
         self.assertTrue(TestChecker.test(input, expect, 407))
     
     def test8(self):
-        input = """a, b, c, d, e : integer = 2, a, b, c, d ; x, y, z : float = a, b, c ;"""
+        input = """a, b, c, d, e : integer = 2, a, b, c, d ; x, y, z : float = a, b, c ; main : function void () {}"""
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 408))
         
     def test9(self):
-        input = """a : string ; b : string = a ;"""
+        input = """a : string ; b : string = a ; main : function void () {}"""
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 409))
     
@@ -54,7 +54,7 @@ class CheckerSuite(unittest.TestCase):
         self.assertTrue(TestChecker.test(input, expect, 410))
         
     def test11(self):
-        input = """a : float = 1 + 1.2 ;"""
+        input = """a : float = 1 + 1.2 ; main : function void () {}"""
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 411))
         
@@ -64,7 +64,7 @@ class CheckerSuite(unittest.TestCase):
         self.assertTrue(TestChecker.test(input, expect, 412))
         
     def test13(self):
-        input = """a : integer = 1 + 2 + 3 ;"""
+        input = """a : integer = 1 + 2 + 3 ; main : function void () {}"""
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 413))
         
@@ -89,7 +89,7 @@ class CheckerSuite(unittest.TestCase):
         self.assertTrue(TestChecker.test(input, expect, 417))
         
     def test18(self):
-        input = """a : integer = 8 % 3 ;"""
+        input = """a : integer = 8 % 3 ; main : function void () {}"""
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 418))
         
@@ -97,6 +97,11 @@ class CheckerSuite(unittest.TestCase):
         input = """a : integer = 8 % 2.3 ;"""
         expect = "Type mismatch in expression: FloatLit(2.3)"
         self.assertTrue(TestChecker.test(input, expect, 419))
+    
+    def test20(self):
+        input = """a : integer = 8 % 2 ;"""
+        expect = "No entry point"
+        self.assertTrue(TestChecker.test(input, expect, 420))
         
     def test21(self):
         input = """a : boolean = true || false || 2 ;"""
@@ -108,8 +113,13 @@ class CheckerSuite(unittest.TestCase):
         expect = "Type mismatch in Variable Declaration: VarDecl(a, StringType, BinExpr(||, BinExpr(||, BooleanLit(True), BooleanLit(False)), BooleanLit(True)))"
         self.assertTrue(TestChecker.test(input, expect, 422))
         
+    def test23(self):
+        input = """a : boolean = true || false || true ;"""
+        expect = "No entry point"
+        self.assertTrue(TestChecker.test(input, expect, 423))
+        
     def test24(self):
-        input = """a, b, c : integer ; d : float = a + b + c ;"""
+        input = """a, b, c : integer ; d : float = a + b + c ; main : function void () {}"""
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 424))
         
@@ -134,12 +144,12 @@ class CheckerSuite(unittest.TestCase):
         self.assertTrue(TestChecker.test(input, expect, 428))
         
     def test29(self):
-        input = """ a : boolean = 3 >= 3.4 ;"""
+        input = """ a : boolean = 3 >= 3.4 ; main : function void () {}"""
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 429))
         
     def test30(self):
-        input = """ b : float ; a : boolean = 3 >= b ;"""
+        input = """ b : float ; a : boolean = 3 >= b ; main : function void () {}"""
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 430))
         
@@ -149,32 +159,32 @@ class CheckerSuite(unittest.TestCase):
         self.assertTrue(TestChecker.test(input, expect, 431))
         
     def test32(self):
-        input = """ a : string = "2" :: "33" ;"""
+        input = """ a : string = "2" :: "33" ; main : function void () {}"""
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 432))
 
     def test33(self):
-        input = """ x : string = "223232" ; a : string = "2" :: x ;"""
+        input = """ x : string = "223232" ; a : string = "2" :: x ; main : function void () {}"""
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 433))
         
     def test34(self):
-        input = """ x : float = -2.5554 ;"""
+        input = """ x : float = -2.5554 ; main : function void () {}"""
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 434))
         
     def test35(self):
-        input = """ x : float = -2.5554 + 3 + -4.2 ;"""
+        input = """ x : float = -2.5554 + 3 + -4.2 ; main : function void () {}"""
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 435))
         
     def test36(self):
-        input = """ x : boolean = !true ;"""
+        input = """ x : boolean = !true ; main : function void () {}"""
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 436))
         
     def test37(self):
-        input = """ a : boolean = false ; x : boolean = !a ;"""
+        input = """ a : boolean = false ; x : boolean = !a ; main : function void () {}"""
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 437))
         
@@ -184,7 +194,7 @@ class CheckerSuite(unittest.TestCase):
         self.assertTrue(TestChecker.test(input, expect, 438))
         
     def test39(self):
-        input = """ x : integer ; a : array [3,1] of integer = {{1}, {2}, {x}} ;"""
+        input = """ x : integer ; a : array [3,1] of integer = {{1}, {2}, {x}} ; main : function void () {}"""
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 439))
         
@@ -199,7 +209,7 @@ class CheckerSuite(unittest.TestCase):
         self.assertTrue(TestChecker.test(input, expect, 441))
         
     def test42(self):
-        input = """ a : array [2,1] of integer = {{1 + 2}, {3 + 4}} ;"""
+        input = """ a : array [2,1] of integer = {{1 + 2}, {3 + 4}} ; main : function void () {}"""
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 442))
         
@@ -209,7 +219,7 @@ class CheckerSuite(unittest.TestCase):
         self.assertTrue(TestChecker.test(input, expect, 443))
         
     def test44(self):
-        input = """ x, y : integer ; a : array [2] of integer = {1 + x, 2 * y} ;"""
+        input = """ x, y : integer ; a : array [2] of integer = {1 + x, 2 * y} ; main : function void () {}"""
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 444))
         
@@ -254,12 +264,17 @@ class CheckerSuite(unittest.TestCase):
         self.assertTrue(TestChecker.test(input, expect, 452))
         
     def test53(self):
-        input = """ a : auto = "false" ; b : auto = a :: "true" ;"""
+        input = """ a : auto = "false" ; b : auto = a :: "true" ; main : function void () {}"""
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 453))
         
+    def test54(self):
+        input = """ main : function void () {}"""
+        expect = "[]"
+        self.assertTrue(TestChecker.test(input, expect, 454))    
+        
     def test55(self):
-        input = """ x : auto = {{1.0, 2.2}, {3.9, 2.5}, {3.7, 9.0}} ; """
+        input = """ x : auto = {{1.0, 2.2}, {3.9, 2.5}, {3.7, 9.0}} ; main : function void () {}"""
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 455))
         
@@ -267,6 +282,16 @@ class CheckerSuite(unittest.TestCase):
         input = """ x : auto = 1 + {1, 2, 3}; """
         expect = "Type mismatch in expression: ArrayLit([IntegerLit(1), IntegerLit(2), IntegerLit(3)])"
         self.assertTrue(TestChecker.test(input, expect, 456))
+        
+    def test57(self):
+        input = """ main : function integer () {} """
+        expect = "No entry point"
+        self.assertTrue(TestChecker.test(input, expect, 457))
+        
+    def test58(self):
+        input = """ main : function void (a : integer) {} """
+        expect = "No entry point"
+        self.assertTrue(TestChecker.test(input, expect, 458))
         
     def test59(self):
         input = """ arr : array [3, 2] of integer = {{{1}, {2}}, {{2}, {3}}, {{3}, {3, 3}}} ; """
@@ -284,7 +309,7 @@ class CheckerSuite(unittest.TestCase):
         self.assertTrue(TestChecker.test(input, expect, 461))
         
     def test62(self):
-        input = """ arr : array [3, 2] of float = {{1.0, 2.0}, {2.0, 3.0}, {1.2, 1.0}} ; """
+        input = """ arr : array [3, 2] of float = {{1.0, 2.0}, {2.0, 3.0}, {1.2, 1.0}} ; main : function void () {}"""
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 462))
         
@@ -304,7 +329,7 @@ class CheckerSuite(unittest.TestCase):
         self.assertTrue(TestChecker.test(input, expect, 474))
         
     def test66(self):
-        input = """ a : array [3,2] of float = {{2.0, 3.0}, {3.0, 4.0}, {5.0, 6.6}} ; b : float = a[0, 1] ;"""
+        input = """ a : array [3,2] of float = {{2.0, 3.0}, {3.0, 4.0}, {5.0, 6.6}} ; b : float = a[0, 1] ; main : function void () {}"""
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 476))
         
@@ -314,12 +339,12 @@ class CheckerSuite(unittest.TestCase):
         self.assertTrue(TestChecker.test(input, expect, 477))
         
     def test68(self):
-        input = """ a : array [3] of float = {1.0, 2.0, 6.6} ; b : float = a[2] ;"""
+        input = """ a : array [3] of float = {1.0, 2.0, 6.6} ; b : float = a[2] ; main : function void () {}"""
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 478))
     
     def test69(self):
-        input = """ x, y, z : float ; main1 : function integer (a : integer, b : float) {} main2 : function integer (c : integer, d : float) {} main3 : function integer (e : integer, f : float) {} """
+        input = """ x, y, z : float ; main1 : function integer (a : integer, b : float) {} main2 : function integer (c : integer, d : float) {} main3 : function integer (e : integer, f : float) {} main : function void () {}"""
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 469))
         
@@ -378,6 +403,7 @@ class CheckerSuite(unittest.TestCase):
             c : float ;
             return ;
             }
+        main : function void () {}
         """
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 474))
@@ -390,6 +416,7 @@ class CheckerSuite(unittest.TestCase):
             c : float ;
             return ;
             }
+        main : function void () {}
         """
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 475))
@@ -413,9 +440,21 @@ class CheckerSuite(unittest.TestCase):
                 return func1(1 ,2) ;
             }
         func1 : function auto (x : integer, y : integer) {}
+        main : function void () {}
         """
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 477))
+        
+    def test78(self):
+        input = """
+        func : function float (a : integer, b : integer) {
+                x : integer ;
+                return func1(1 ,2) ;
+            }
+        func1 : function auto (x : integer, y : integer) {}
+        """
+        expect = "No entry point"
+        self.assertTrue(TestChecker.test(input, expect, 478))
     
     def test79(self):
         input = """
@@ -423,6 +462,7 @@ class CheckerSuite(unittest.TestCase):
                 func1(1, 2) ;
             }
         func1 : function auto (x : auto, y : auto) {}
+        main : function void () {}
         """
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 479))
@@ -453,6 +493,7 @@ class CheckerSuite(unittest.TestCase):
                             }
                     }
             }
+        main : function void () {}
         """
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 480))
@@ -479,13 +520,277 @@ class CheckerSuite(unittest.TestCase):
         func : function float (a : integer, b : integer) {
                 return 1 ;
                 return true ;
-                {return 2 ; return 2.2 ;}
-                
+                {return 2 ; return 2.2 ;} 
             }
+        main : function void () {}
         """
         expect = "[]"
         self.assertTrue(TestChecker.test(input, expect, 482))
+        
+    def test83(self):
+        input = """
+        func : function boolean (inherit a : auto, inherit b : auto) inherit func1 {
+                super(1, 2) ;
+                return true;
+            }
+        func1 : function auto (inherit c : auto, inherit d : auto) inherit func2 {
+                super(3, 4) ;
+                return ;
+        }
+        func2 : function integer (inherit e : auto, inherit f : auto) inherit func {
+                super(5, 6) ;
+                return 2;
+        }
+        main : function void () {}
+        """
+        expect = "[]"
+        self.assertTrue(TestChecker.test(input, expect, 483))
+        
+    def test84(self):
+        input = """
+        x : integer = 2 ;
+        y : string = "42" ;
+        func : function boolean (inherit a : auto, inherit b : auto) inherit func1 {
+                super(x, y) ;
+                return true;
+            }
+        func1 : function auto (inherit out c : auto, inherit out d : auto) {
+                return ;
+        }
+        main : function void () {}
+        """
+        expect = "[]"
+        self.assertTrue(TestChecker.test(input, expect, 484))
 
+    def test85(self):
+        input = """
+        x : integer = 2 ;
+        y : float = 2.1 ;
+        func : function auto (inherit a : auto, inherit b : auto) {
+                if (x > y) { return "true" ; return false ; }
+                else { return "false" ; return true ; }
+                return "yes" ;
+                return 2 ;
+            }
+        main : function void () {}
+        """
+        expect = "[]"
+        self.assertTrue(TestChecker.test(input, expect, 485))
+        
+    def test86(self):
+        input = """
+        x : integer = 2 ;
+        y : float = 2.1 ;
+        func : function auto (inherit a : auto, inherit b : auto) {
+                while (0 != 1)
+                {
+                    if (x > y)
+                    {
+                        if (x > y)
+                        {
+                            if (x > y) break;
+                            else
+                            {
+                                x = 3 ;
+                                y = 1.2 ;
+                                continue ;
+                                x = true ;
+                            }
+                        }
+                        else break ;
+                    }
+                    else a = c ;
+                }
+            }
+        main : function void () {}
+        """
+        expect = "Undeclared Identifier: c"
+        self.assertTrue(TestChecker.test(input, expect, 486))
+        
+    def test87(self):
+        input = """
+        x : integer = 2 ;
+        y : float = 2.1 ;
+        func : function auto (inherit a : auto, inherit b : auto) {
+            x = func1(func1(func1(1, 2), func1(1, 2)), func1(func1(1, 2), func1(1, 2))) ;
+        }
+        func1 : function auto (inherit a : auto, inherit b : auto) {
+            return 2 ;
+        }
+        main : function void () {}
+        """
+        expect = "[]"
+        self.assertTrue(TestChecker.test(input, expect, 487))
+        
+    def test88(self):
+            input = """
+            x : integer = 2 ;
+            func : function auto (inherit a : auto, inherit b : auto) {
+                x = func1(func1(func1(1.1, 2), func1(3, 4)), func1(func1(5, 6), func1(7, 8))) ;
+                return ;
+            }
+            func1 : function auto (a : auto, b : auto) {
+                return 2 ;
+            }
+            main : function void () {}
+            """
+            expect = "Type mismatch in expression: FuncCall(func1, [IntegerLit(3), IntegerLit(4)])"
+            self.assertTrue(TestChecker.test(input, expect, 488))
+            
+    def test89(self):
+            input = """
+            func : function auto (inherit a : auto, inherit b : auto) inherit func1 {
+                super(func1(func1(1.1, 2), func1(3, 4))) ;
+                return ;
+            }
+            func1 : function auto (inherit x : auto, y : auto) {
+                return 2 ;
+            }
+            """
+            expect = "Type mismatch in expression: FuncCall(func1, [IntegerLit(3), IntegerLit(4)])"
+            self.assertTrue(TestChecker.test(input, expect, 489))
+            
+    def test90(self):
+            input = """
+            func : function auto (inherit a : auto, inherit b : auto) inherit func1 {
+                super(func1(func1(1.1, 2.2), func1(3, 4))) ;
+                return ;
+            }
+            func1 : function auto (inherit x : auto, y : auto) {
+                return 2 ;
+            }
+            main : function void () {}
+            """
+            expect = "[]"
+            self.assertTrue(TestChecker.test(input, expect, 490))
+            
+    def test91(self):
+            input = """
+            func : function auto (inherit a : auto, inherit b : auto) inherit func1 {
+                super(func1(func1(1.1, 2.2), func1(3, 4))) ;
+                x = true ;
+                return ;
+            }
+            func1 : function auto (inherit x : auto, y : auto) {
+                return 2 ;
+            }
+            main : function void () {}
+            """
+            expect = "Type mismatch in statement: AssignStmt(Id(x), BooleanLit(True))"
+            self.assertTrue(TestChecker.test(input, expect, 491))
+            
+    def test92(self):
+            input = """
+            func : function auto (inherit a : auto, inherit b : auto) inherit func1 {
+                super(func1(func1(1.1, 2.2), func1(3, 4))) ;
+                y = true ;
+                return ;
+            }
+            func1 : function auto (inherit x : auto, y : auto) {
+                return 2 ;
+            }
+            main : function void () {}
+            """
+            expect = "Undeclared Identifier: y"
+            self.assertTrue(TestChecker.test(input, expect, 492))
+            
+    def test93(self):
+            input = """
+            x : float ;
+            func : function auto (inherit a : auto, inherit b : auto) {
+                x = func1(func1(func1(1.1, 2), func1(3, 4)), func1(func1(5, 6), func1(7, 8))) ;
+                return ;
+            }
+            func1 : function auto (inherit x : auto, y : auto) {
+                return 2 ;
+            }
+            main : function void () {}
+            """
+            expect = "Type mismatch in expression: FuncCall(func1, [IntegerLit(3), IntegerLit(4)])"
+            self.assertTrue(TestChecker.test(input, expect, 493))
+            
+    def test94(self):
+            input = """
+            x : float ;
+            func : function auto (inherit a : auto, inherit b : auto) {
+                x = func1(func1(func1(1.1, 2.2), func1(3, 4)), func1(func1(5, 6), func1(7, 8))) ;
+                return ;
+            }
+            func1 : function auto (inherit x : auto, y : auto) {
+                return 2 ;
+            }
+            main : function void () {}
+            """
+            expect = "[]"
+            self.assertTrue(TestChecker.test(input, expect, 494))
 
+    def test95(self):
+            input = """
+            func1 : function float (inherit x : auto, y : auto) {
+                return 2 ;
+            }
+            x : float = func1(func1(func1(1, 2), func1(3, 4)), func1(func1(5, 6), func1(7, 8))) ;
+            main : function void () {}
+            """
+            expect = "Type mismatch in expression: FuncCall(func1, [IntegerLit(1), IntegerLit(2)])"
+            self.assertTrue(TestChecker.test(input, expect, 495))
+            
+    def test96(self):
+        input = """
+        func1 : function auto (inherit x : auto, y : auto) {
+            return 2 ;
+        }
+        x : float = func1(func1(func1(1, 2), func1(3, 4)), func1(func1(5, 6), func1(7, 8))) ;
+        main : function void () {}
+        """
+        expect = "[]"
+        self.assertTrue(TestChecker.test(input, expect, 496))
+        
+    def test97(self):
+        input = """
+        func1 : function auto (inherit x : auto, y : auto) {
+            return 2 ;
+        }
+        x : float = func1(func1(func1(1, "2"), func1(3, 4)), func1(func1(5, 6), func1(7, 8))) ;
+        main : function void () {}
+        """
+        expect = "Type mismatch in expression: IntegerLit(4)"
+        self.assertTrue(TestChecker.test(input, expect, 497))
+        
+    def test98(self):
+        input = """
+        func1 : function auto (inherit x : auto, y : auto) {
+            return 2 ;
+        }
+        x : float = func1(func1(func1(1, "2"), func1(3, "4")), func1(func1(5, 6), func1(7, 8))) ;
+        main : function void () {}
+        """
+        expect = "Type mismatch in expression: FuncCall(func1, [IntegerLit(3), StringLit(4)])"
+        self.assertTrue(TestChecker.test(input, expect, 498))
+        
+    def test99(self):
+        input = """
+        func1 : function auto (inherit x : auto, y : auto) {
+            return "2" ;
+        }
+        a: string ;
+        x : float = func1(func1(func1("1", "2"), func1("3", "4")), func1(func1(a, "6"), func1(7, 8))) ;
+        main : function void () {}
+        """
+        expect = "Type mismatch in expression: IntegerLit(7)"
+        self.assertTrue(TestChecker.test(input, expect, 499))
+        
+    def test100(self):
+        input = """
+            func : function auto (x : auto, y : auto) inherit func1 {
+                return ;
+            }
+            func1 : function auto (inherit x : auto, y : auto) {
+                return 2 ;
+            }
+            main : function void () {}
+            """
+        expect = "Invalid statement in function: func"
+        self.assertTrue(TestChecker.test(input, expect, 500))
 
                                                                                                             
